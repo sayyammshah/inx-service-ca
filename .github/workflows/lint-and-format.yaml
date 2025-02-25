@@ -26,11 +26,9 @@ jobs:
           node-version: 20.18.2
           cache: pnpm
 
-      # Sets up pnpm package of version specified in paackage.json
-      - name: Enable Corepack & Use pnpm Version from package.json
-        run: |
-          corepack enable 
-          corepack prepare pnpm@latest --activate
+      # Sets up pnpm package of version
+      - name: Install pnpm
+        run: npm install -g pnpm@10.4.1
 
       - name: Install Dependencies
         run: pnpm install

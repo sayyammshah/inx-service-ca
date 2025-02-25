@@ -24,7 +24,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.18.2
-          cache: pnpm
 
       # Sets up pnpm package of version
       - name: Install pnpm

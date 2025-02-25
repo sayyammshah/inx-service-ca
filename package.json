@@ -1,0 +1,42 @@
+{
+  "name": "inx-service-ca",
+  "version": "1.0.0",
+  "description": "This service contains the backend logic for insightsX project, implemented with hexagonal code architecture",
+  "author": {
+    "name": "Sayyam"
+  },
+  "type": "module",
+  "main": "dist/server.ts",
+  "license": "MIT",
+  "keywords": [],
+  "packageManager": "pnpm@10.4.1",
+  "scripts": {
+    "dev": "tsx --env-file=.env.local --watch src/server.ts",
+    "build": "tsc && tsc-alias",
+    "start": "node --env-file=.env.local dist/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "lint:fix": "eslint . --fix",
+    "cleanup": "rm -r dist"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mongodb": "^6.13.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.20.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.2",
+    "eslint": "^9.20.1",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "globals": "^15.15.0",
+    "prettier": "^3.5.1",
+    "tsc-alias": "^1.8.10",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.24.0"
+  }
+}

@@ -27,8 +27,10 @@ jobs:
           cache: pnpm
 
       # Sets up pnpm package of version specified in paackage.json
-      - name: Enable Corepack
-        run: corepack enable
+      - name: Enable Corepack & Use pnpm Version from package.json
+        run: |
+          corepack enable 
+          corepack prepare pnpm@latest --activate
 
       - name: Install Dependencies
         run: pnpm install

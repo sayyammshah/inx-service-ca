@@ -1,5 +1,6 @@
-import { CreateUser } from 'bindings/controllers/index.js'
+import { CreateUser } from '@bindings/controllers'
 import express, { NextFunction, Request, Response } from 'express'
+import { logger } from 'shared/logger.js'
 
 const router = express.Router()
 
@@ -9,6 +10,7 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
     const response = await CreateUser(body)
     res.status(201).json(response)
   } catch (error) {
+    logger.error(error)
     next(error)
   }
 })

@@ -1,12 +1,12 @@
-import { Gender } from '../common/constants.js'
-import { RulesType } from '../common/types.js'
+import { Gender } from '@core/common/constants.js'
+import { RulesType } from '@core/common/types.js'
 import {
   enumValidation,
   formatValidation,
   lengthValidation,
   mandatoryFieldValidation,
   typeValidation,
-} from '../common/validations.js'
+} from 'core/common/validations.js'
 
 export const Rules: RulesType = {
   fields: {

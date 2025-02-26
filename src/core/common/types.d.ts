@@ -1,9 +1,11 @@
+import { AppResponseStatus } from '@core/common/constants.ts'
+
 export type validationResult = {
   isValid: boolean
   message: string
 }
 
-type RulesType = {
+export type RulesType = {
   fields: {
     [key: string]: {
       description: string
@@ -28,4 +30,18 @@ type RulesType = {
     getValidations: <T>(key: string, value: T) => (() => string)[]
     excValidations?: (<T>(key: string, value: T) => string)[]
   }
+}
+
+export type AppCreateUserResponse = {
+  userId: string
+  token: string
+  queryResponse: unknown
+  message: string
+  status: AppResponseStatus
+}
+
+export type GenSecretsReturnRes = {
+  isValid: boolean
+  message: string
+  payload: unknown
 }

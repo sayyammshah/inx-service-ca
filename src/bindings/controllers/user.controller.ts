@@ -1,11 +1,13 @@
-import { UserDataAdapter } from 'bindings/database/mongodb/user.storage.js'
-import { CreateUserAccount } from 'core/applications/user.app.js'
-import { UserDto } from 'core/business/dto/dto.js'
-import { generateUserDto } from 'core/business/dto/mapper.js'
+import { generateUserDto, UserDto } from '@core/business'
+import { CreateUserAccount } from '@core/app'
+import { UserDataAdapter } from '@bindings/mongo-database'
+import { logger } from 'shared/logger.js'
 
 export async function CreateUser(body: {
   [key: string]: string | number
 }): Promise<unknown> {
+  logger.info('CreateUser controller called')
+
   let response: unknown = null
 
   if (Object.keys(body).length === 0) throw new Error('Invalid Params')

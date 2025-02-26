@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-console */
-import express, { NextFunction, Request, Response } from 'express'
+import express, { Request, Response } from 'express'
 import cors from 'cors'
-import { userRouter } from './bindings/routes/express/index.js'
-import { MongoDBClient } from 'infrastructure/clients/mongodb.js'
+import { userRouter } from '@bindings/express-routes'
+import { MongoDBClient } from '@infra/clients'
+import { httpLogger, logger } from 'shared/logger.js'
 
 const PORT = process.env.PORT || 3001
 const app = express()
@@ -25,17 +24,12 @@ app.use(
   }),
 )
 
-app.use((req, res, next) => {
-  const start = Date.now()
-  res.on('finish', () => {
-    const duration = Date.now() - start
-    console.log(`${req.method} ${req.baseUrl} duration - ${duration}ms`)
-  })
-  next()
-})
+app.use(httpLogger)
 
 // ------------------------ Routes ------------------------
+
 app.get('/health-check', (req, res) => {
+  logger.info('Health check called')
   res.json({
     'request-url': req.url,
     message: 'I am OK',
@@ -44,8 +38,10 @@ app.get('/health-check', (req, res) => {
 
 app.use('/v1/api/user', userRouter)
 
+// ------------------------ Routes ------------------------
+
 // Error Middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: Error, req: Request, res: Response) => {
   res.status(500).json({
     error: err.message || 'Something went wrong',
   })
@@ -53,6 +49,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 // Start the Server
 app.listen(PORT, async () => {
-  console.log(`Server running on port ${PORT}`)
+  logger.info(`Server running on port ${PORT}`)
   await MongoDBClient.initiateDatabaseConnection()
 })

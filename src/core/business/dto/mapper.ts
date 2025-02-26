@@ -1,5 +1,5 @@
-import { Gender } from 'core/business/common/constants.js'
-import { UserDto } from 'core/business/dto/dto.js'
+import { Gender } from 'core/common/constants.js'
+import { UserDto } from 'core/business/dto/entityDto.js'
 
 export const generateUserDto = (payload: unknown): UserDto => {
   if (typeof payload !== 'object' || payload === null)

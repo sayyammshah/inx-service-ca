@@ -1,4 +1,4 @@
-import { Gender } from 'core/business/common/constants.js'
+import { Gender } from 'core/common/constants.js'
 
 export type UserDto = {
   name: string

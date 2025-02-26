@@ -1,1 +1,1 @@
-export { CreateUser } from './user.controller.js'
+export { CreateUser } from 'bindings/controllers/user.controller.js'

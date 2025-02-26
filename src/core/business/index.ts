@@ -1,4 +1,7 @@
-import { Post } from './entityManager/Insight.js'
-import { User } from './entityManager/User.js'
+// DTOs
 
-export { Post, User }
+export type { UserDto } from 'core/business/dto/entityDto.js'
+export { generateUserDto } from 'core/business/dto/mapper.js'
+
+// Entity Managers
+export { User } from 'core/business/entityManager/User.js'

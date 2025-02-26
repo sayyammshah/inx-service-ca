@@ -1,3 +1,3 @@
-import userRouter from './user.route.js'
+import router from 'bindings/routes/express/user.route.js'
 
-export { userRouter }
+export { router as userRouter }

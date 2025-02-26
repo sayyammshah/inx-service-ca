@@ -1,4 +1,5 @@
 import { Db, MongoClient } from 'mongodb'
+import { logger } from 'shared/logger.js'
 
 export class MongoDBClient {
   private static _client: MongoClient | null = null
@@ -24,12 +25,12 @@ export class MongoDBClient {
       })
       await this._client.connect()
       this._instance = this._client.db(databaseName)
-      console.log('Database connection established')
+      logger.info('Database connection established')
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error)
       this._client = null
       this._instance = null
-      console.error(errorMsg)
+      logger.error(errorMsg)
       throw new Error(`MongoDb Connection Failed: ${errorMsg}`)
     }
   }
@@ -48,16 +49,16 @@ export class MongoDBClient {
 
   public static async closeConnection(): Promise<void> {
     if (!this._client) {
-      console.log('No MongoDB connection to close')
+      logger.error('No MongoDB connection to close')
       return
     }
 
     try {
       await this._client.close()
-      console.log('Database connection closed')
+      logger.info('Database connection closed')
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error)
-      console.error('Failed to close MongoDB connection', { error: errorMsg })
+      logger.error('Failed to close MongoDB connection', { error: errorMsg })
       throw new Error(`MongoDB close failed: ${errorMsg}`)
     } finally {
       this._client = null

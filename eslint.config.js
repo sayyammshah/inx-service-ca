@@ -35,23 +35,6 @@ export default [
       'no-console': 'warn',
       'prettier/prettier': 'error',
       '@typescript-eslint/no-unused-vars': 'warn',
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: [
-            {
-              group: ['*/core/business/*'],
-              message:
-                "Relative imports are not allowed, use '@core/business' alias instead",
-            },
-            {
-              group: ['*/core/interfaces/*'],
-              message:
-                "Relative imports are not allowed, use '@core/interfaces' alias instead",
-            },
-          ],
-        },
-      ],
     },
   },
 ]

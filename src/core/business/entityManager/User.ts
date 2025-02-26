@@ -1,20 +1,20 @@
-import { UserDto } from 'core/business/dto/dto.js'
-import { validationResult } from '../common/types.js'
-import { Rules } from '../rulesEngine/User.core.js'
+import { validationResult } from '@core/common/types.js'
+import { UserDto } from 'core/business/dto/entityDto.js'
+import { Rules } from 'core/business/rulesEngine/User.core.js'
 
 export class User {
   // Immutable
-  private readonly userId: string
-  private readonly createdAt: number
+  readonly userId: string
+  readonly createdAt: number
 
   // Mutable
-  private name: string
-  private email: string
-  private password: string
-  private dob: number | null
-  private gender: string | null
-  private profilePicture: string | null
-  private updatedAt: number
+  name: string
+  email: string
+  password: string
+  dob: number | null
+  gender: string | null
+  profilePicture: string | null
+  updatedAt: number
 
   constructor({
     userId,
@@ -49,7 +49,7 @@ export class User {
     const { getValidations } = Rules.handlers
 
     for (const field in user) {
-      const value = user[field as keyof User]
+      const value = user[field as keyof UserDto]
       const validations = getValidations<typeof value>(field, value)
 
       message =

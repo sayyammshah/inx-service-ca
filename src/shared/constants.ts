@@ -11,3 +11,12 @@ export const ResponseStatusCodes = {
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
 }
+
+export enum RequestMethods {
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+  PATCH = 'PATCH',
+  OPTIONS = 'OPTIONS',
+}

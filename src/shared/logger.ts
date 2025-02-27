@@ -6,6 +6,7 @@ const isDevelopment = process.env.NODE_ENV === ENVS.DEV
 
 const loggerOptions: LoggerOptions = {
   name: 'inx',
+  timestamp: true,
   transport: {
     target: 'pino-pretty',
     options: {

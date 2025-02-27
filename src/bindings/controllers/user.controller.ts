@@ -1,5 +1,5 @@
 import { generateUserDto, UserDto } from '@core/business'
-import { CreateUserAccount } from '@core/app'
+import { AuthenticateUserAccount, CreateUserAccount } from '@core/app'
 import { UserDataAdapter } from '@bindings/mongo-database'
 import { logger } from 'shared/logger.js'
 import { ControllerResponse } from '@bindings/common/types.js'
@@ -8,6 +8,7 @@ import { tokenManager } from '@bindings/common/utils.js'
 import { ResponseStatusCodes } from 'shared/constants.js'
 import { AppError } from 'shared/apiResponseCls.js'
 import { fileURLToPath } from 'node:url'
+import { USER_PROJECTIONS, UserErrorMsg } from '@bindings/common/constants.js'
 
 /**
  * This function is responsible for creating a new user account.
@@ -29,25 +30,63 @@ export async function CreateUser(body: {
   if (Object.keys(body).length === 0)
     throw new AppError(
       ResponseStatusCodes.BAD_REQUEST,
-      'Invalid Params',
+      UserErrorMsg.INVALID_PARAMS,
       `${fileURLToPath(import.meta.url)} ${CreateUser.name}`,
     )
-
-  // Deps Injections
-  const userDataAdapter = new UserDataAdapter()
 
   // Call core module
   const payload: UserDto = generateUserDto(body)
   const result: CoreAppResponse = await CreateUserAccount(
-    { UserDataAdapter: userDataAdapter },
+    { UserDataAdapter: new UserDataAdapter() },
     payload,
   )
 
   if (result.status !== ResponseStatusCodes.CREATED)
     throw new AppError(
       result.status ?? ResponseStatusCodes.INTERNAL_SERVER_ERROR,
-      `Error Occurred while creating user account, ${result.message}`,
+      `${UserErrorMsg.FAILED_ACCOUNT_CREATION}${result.message}`,
       `${fileURLToPath(import.meta.url)} ${CreateUser.name}`,
+    )
+
+  // Generate Token - Attached it to Response
+  const token: string = tokenManager().generate({
+    userId: result.uid,
+    name: payload.name,
+    email: payload.email,
+  })
+  response = {
+    ...result,
+    token,
+  }
+
+  return response
+}
+
+export async function AuthenticateUser(body: {
+  [key: string]: string | number
+}): Promise<ControllerResponse> {
+  let response: ControllerResponse | null = null
+
+  if (Object.keys(body).length === 0)
+    throw new AppError(
+      ResponseStatusCodes.BAD_REQUEST,
+      UserErrorMsg.INVALID_PARAMS,
+      `${fileURLToPath(import.meta.url)} ${AuthenticateUser.name}`,
+    )
+
+  // Call core module
+  const payload: UserDto = generateUserDto(body)
+  const result = await AuthenticateUserAccount(
+    { UserDataAdapter: new UserDataAdapter() },
+    payload,
+    { projection: USER_PROJECTIONS },
+  )
+
+  if (result.status !== ResponseStatusCodes.OK)
+    throw new AppError(
+      result.status ?? ResponseStatusCodes.INTERNAL_SERVER_ERROR,
+      `${UserErrorMsg.FAILED_ACCOUNT_AUTH}${result.message}`,
+      `${fileURLToPath(import.meta.url)} ${AuthenticateUser.name}`,
     )
 
   // Generate Token - Attached it to Response

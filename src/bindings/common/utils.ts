@@ -1,4 +1,4 @@
-import { TOKEN } from '@bindings/common/constants.js'
+import { TOKEN, UserErrorMsg } from '@bindings/common/constants.js'
 import { GenSecretsReturnRes } from '@bindings/common/types.js'
 import { UserDto } from '@core/business'
 import { Request } from 'express'
@@ -44,7 +44,8 @@ export const tokenManager = () => {
       .update(payload)
       .digest('base64')
 
-    if (signature !== decodedSignature) response.message = 'Invalid Token'
+    if (signature !== decodedSignature)
+      response.message = UserErrorMsg.INVALID_TOKEN
 
     response.payload = JSON.parse(
       Buffer.from(payload, 'base64').toString('utf-8'),

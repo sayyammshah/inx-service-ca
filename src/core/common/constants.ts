@@ -13,6 +13,12 @@ export enum ValidationErrors {
   LENGTH_MAX = 'Expected maximum length is',
   FORMAT = 'Has invalid format',
 }
+export enum CoreUserErrorMsg {
+  USER_EXISTS = 'Account already exists.',
+  USER_NOT_FOUND = 'User not found',
+  INCORRECT_PASSWORD = 'Incorrect password',
+  INVALID_PARAMS = 'Invalid params',
+}
 
 // Hash Constants
 export const HASH = {
@@ -32,3 +38,5 @@ export const AppResStatusCodes = {
   UNAUTHORIZED: 401,
   INTERNAL_SERVER_ERROR: 500,
 }
+
+export const UserAuthFields = ['email', 'password']

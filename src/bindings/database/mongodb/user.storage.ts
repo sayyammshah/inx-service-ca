@@ -33,13 +33,18 @@ export class UserDataAdapter implements UserDataInterface {
     }
   }
 
-  async read(filter: unknown): Promise<unknown> {
+  async read(
+    filter?: unknown,
+    projection?: Record<string, number>,
+  ): Promise<unknown> {
     try {
       if (!this.client) this.client = await this.getClient()
 
       const response = await this.client
         .collection(this.collectionName)
-        .find(filter as FindCursor<WithId<Document>>)
+        .find(filter as FindCursor<WithId<Document>>, {
+          projection,
+        })
         .toArray()
 
       return response

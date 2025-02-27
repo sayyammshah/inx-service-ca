@@ -1,4 +1,4 @@
-import { HASH } from '@core/common/constants.js'
+import { CoreUserErrorMsg, HASH } from '@core/common/constants.js'
 import { GenSecretsReturnRes } from '@core/common/types.js'
 import { pbkdf2Sync, randomBytes } from 'node:crypto'
 
@@ -19,11 +19,14 @@ export const hashManager = () => {
     return `${salt}.${hash}`
   }
 
-  function verify(hash: string): Omit<GenSecretsReturnRes, 'payload'> {
+  function verify(
+    hash: string,
+    payload: string,
+  ): Omit<GenSecretsReturnRes, 'payload'> {
     const [salt, storedHash] = hash.split('.')
 
     const calculatedHash = pbkdf2Sync(
-      hash,
+      payload,
       salt,
       HASH.ITERATIONS,
       HASH.KEY_LENGTH,
@@ -31,7 +34,7 @@ export const hashManager = () => {
     ).toString('hex')
 
     if (calculatedHash !== storedHash)
-      return { isValid: false, message: 'Invalid Hash' }
+      return { isValid: false, message: CoreUserErrorMsg.INCORRECT_PASSWORD }
 
     return { isValid: true, message: '' }
   }

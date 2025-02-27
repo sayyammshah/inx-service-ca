@@ -1,1 +1,4 @@
-export { CreateUserAccount } from 'core/applications/user.app.js'
+export {
+  CreateUserAccount,
+  AuthenticateUserAccount,
+} from 'core/applications/user.app.js'

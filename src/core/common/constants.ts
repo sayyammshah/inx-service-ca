@@ -1,3 +1,5 @@
+export const MODULE_NAME = 'CORE'
+
 export enum Gender {
   MALE = 'Male',
   FEMALE = 'Female',

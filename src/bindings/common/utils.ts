@@ -1,16 +1,20 @@
 import { TOKEN, UserErrorMsg } from '@bindings/common/constants.js'
-import { GenSecretsReturnRes } from '@bindings/common/types.js'
+import { GenSecretsReturnRes, RequestContext } from '@bindings/common/types.js'
 import { UserDto } from '@core/business'
 import { Request } from 'express'
 import { createHmac, randomUUID } from 'node:crypto'
+import { IncomingHttpHeaders } from 'node:http'
+import { RequestMethods } from 'shared/constants.js'
+import { generateUUID } from 'shared/utils.js'
 
-export function getRequestContext(req: Request) {
-  const requestContext = {
-    method: req.method,
-    requestId: '',
-    userAgent: {},
-    correlationId: '',
-    clientIp: '',
+export function getRequestContext(req: Request): RequestContext {
+  const headers: IncomingHttpHeaders = req.headers
+
+  const requestContext: RequestContext = {
+    method: req.method as RequestMethods,
+    requestId: (headers['request-id'] ?? generateUUID()) as string,
+    userAgent: headers['user-agent'],
+    correlationId: (headers['x-Correlation-id'] ?? generateUUID()) as string,
   }
 
   return requestContext

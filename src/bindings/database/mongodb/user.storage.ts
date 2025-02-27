@@ -11,7 +11,6 @@ export class UserDataAdapter implements UserDataInterface {
 
   private async getClient(): Promise<Db> {
     if (!this.client) {
-      await MongoDBClient.initiateDatabaseConnection()
       this.client = await MongoDBClient.getInstance()
     }
     return await MongoDBClient.getInstance()

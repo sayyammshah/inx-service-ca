@@ -1,3 +1,4 @@
+import { AppLoggerInterface } from '@bindings/logger-interface'
 import { AppResStatusCodes } from '@core/common/constants.ts'
 import { UserDataInterface } from '@core/storage-interface'
 
@@ -45,6 +46,7 @@ export type GenSecretsReturnRes = {
 
 export type UserAdapters = {
   UserDataAdapter: UserDataInterface
+  LoggerAdapter: AppLoggerInterface
 }
 
 // Shared
@@ -53,4 +55,10 @@ export interface CoreAppResponse {
   uid: string
   queryResponse: unknown | null
   message: string
+}
+export interface CoreRequestContext {
+  method: RequestMethods
+  requestId: string // Unique identifier for tracking the request within this service
+  userAgent: string | undefined // parseIt
+  correlationId: string // Used for tracing requests across multiple microservices
 }

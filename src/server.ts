@@ -1,8 +1,9 @@
-import express, { Request, Response } from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
 import { userRouter } from '@bindings/express-routes'
 import { MongoDBClient } from '@infra/clients'
 import { httpLogger, logger } from 'shared/logger.js'
+import { ApiResponse, AppError } from 'shared/apiResponseCls.js'
 
 const PORT = process.env.PORT || 3001
 const app = express()
@@ -41,11 +42,27 @@ app.use('/v1/api/user', userRouter)
 // ------------------------ Routes ------------------------
 
 // Error Middleware
-app.use((err: Error, req: Request, res: Response) => {
-  res.status(500).json({
-    error: err.message || 'Something went wrong',
-  })
-})
+app.use(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  (err: Error | AppError, req: Request, res: Response, next: NextFunction) => {
+    const errObject = {
+      status: err instanceof AppError ? err.status : 500,
+      stack: err.stack ?? '',
+      cause:
+        err instanceof AppError
+          ? err.cause
+          : err instanceof Error
+            ? err.message
+            : (err ?? 'Something went wrong'),
+    }
+    res.status(errObject.status).json(
+      new ApiResponse(errObject.status, null, {
+        cause: errObject.cause,
+        stack: errObject.stack,
+      }),
+    )
+  },
+)
 
 // Start the Server
 app.listen(PORT, async () => {

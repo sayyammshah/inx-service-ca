@@ -14,23 +14,21 @@ export enum ValidationErrors {
   FORMAT = 'Has invalid format',
 }
 
-// Token Constants
-export const TOKEN = {
-  ALGORITHM: 'sha256',
-  DELIMETER: '.',
-}
-
 // Hash Constants
 export const HASH = {
   ALGORITHM: 'sha512',
-  SALT_LENGTH: 128,
+  SALT_LENGTH: 16,
   ITERATIONS: 10000,
-  KEY_LENGTH: 128,
+  KEY_LENGTH: 16,
   DELIMETER: '.',
 }
 
-export enum AppResponseStatus {
-  SUCCESS = 'success',
-  BAD_REQUEST = 'badRequest',
-  ERROR = 'error',
+export const AppResStatusCodes = {
+  OK: 200,
+  CREATED: 201,
+  BAD_REQUEST: 400,
+  NOT_FOUND: 404,
+  FORBIDDEN: 403,
+  UNAUTHORIZED: 401,
+  INTERNAL_SERVER_ERROR: 500,
 }

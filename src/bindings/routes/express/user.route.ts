@@ -1,5 +1,5 @@
 import { ControllerResponse } from '@bindings/common/types.js'
-import { CreateUser } from '@bindings/controllers'
+import { AuthenticateUser, CreateUser } from '@bindings/controllers'
 import express, { NextFunction, Request, Response } from 'express'
 import { ApiResponse } from 'shared/apiResponseCls.js'
 import { logger } from 'shared/logger.js'
@@ -32,14 +32,20 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   }
 })
 
-router.get('/', (req: Request, res: Response, next: NextFunction) => {
-  try {
-    res.status(200).json({
-      messsage: 'User Get Endpoint',
-    })
-  } catch (error) {
-    next(error)
-  }
-})
+router.post(
+  '/auth',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const body = req.body
+      const result: ControllerResponse = await AuthenticateUser(body)
+      const response = new ApiResponse(result.status, result)
+      logger.info(response)
+      res.status(result.status).json(response)
+    } catch (error) {
+      logger.error(error)
+      next(error)
+    }
+  },
+)
 
 export default router

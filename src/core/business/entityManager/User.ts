@@ -1,3 +1,4 @@
+import { UserAuthFields } from '@core/common/constants.js'
 import { validationResult } from '@core/common/types.js'
 import { UserDto } from 'core/business/dto/entityDto.js'
 import { Rules } from 'core/business/rulesEngine/User.core.js'
@@ -43,14 +44,16 @@ export class User {
     this.createdAt = this.updatedAt = new Date().getTime()
   }
 
-  static validate(user: UserDto): validationResult {
+  static validate(user: UserDto, isAuth: boolean = false): validationResult {
     let message = ''
 
     const { getValidations } = Rules.handlers
 
     for (const field in user) {
       const value = user[field as keyof UserDto]
-      const validations = getValidations<typeof value>(field, value)
+
+      if (!UserAuthFields.includes(field)) continue
+      const validations = getValidations<typeof value>(field, value, isAuth)
 
       message =
         validations.map((validate) => validate()).find((message) => message) ||

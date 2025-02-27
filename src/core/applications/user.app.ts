@@ -1,7 +1,7 @@
 import { User, UserDto } from '@core/business'
 import { generateId, hashManager } from '@core/common/utils.js'
-import { Adapters, CoreAppResponse } from '@core/common/types.js'
-import { AppResStatusCodes } from '@core/common/constants.js'
+import { UserAdapters, CoreAppResponse } from '@core/common/types.js'
+import { AppResStatusCodes, CoreUserErrorMsg } from '@core/common/constants.js'
 
 /**
  * Creates a new user account in the system.
@@ -17,7 +17,7 @@ import { AppResStatusCodes } from '@core/common/constants.js'
  *          the query response, a message, and a status code.
  */
 export const CreateUserAccount = async (
-  adapters: Adapters,
+  adapters: UserAdapters,
   payload: UserDto,
 ): Promise<CoreAppResponse> => {
   const { isValid, message } = User.validate(payload)
@@ -38,7 +38,7 @@ export const CreateUserAccount = async (
 
   if (Array.isArray(userAlreadyExists) && userAlreadyExists.length > 0) {
     response.status = AppResStatusCodes.BAD_REQUEST
-    response.message = 'User already exists'
+    response.message = CoreUserErrorMsg.USER_EXISTS
     return response
   }
 
@@ -53,6 +53,53 @@ export const CreateUserAccount = async (
 
   response.uid = userId
   response.queryResponse = await UserDataAdapter.create(newUser)
+
+  return response
+}
+
+export const AuthenticateUserAccount = async (
+  adapters: UserAdapters,
+  payload: UserDto,
+  options?: {
+    projection: Record<string, number>
+  },
+): Promise<CoreAppResponse> => {
+  const { isValid, message } = User.validate(payload, true)
+  if (!isValid) throw new Error(`Invalid User Object Provided: ${message}`)
+
+  const { UserDataAdapter } = adapters
+  const { projection = {} } = options || {}
+
+  const filter = {
+    email: payload.email,
+  }
+  const response: CoreAppResponse = {
+    uid: '',
+    queryResponse: null,
+    message: '',
+    status: AppResStatusCodes.OK,
+  }
+
+  const userData = await UserDataAdapter.read(filter, projection)
+
+  if (Array.isArray(userData) && userData.length == 0) {
+    response.status = AppResStatusCodes.NOT_FOUND
+    response.message = CoreUserErrorMsg.USER_NOT_FOUND
+    return response
+  }
+  const { password, userId } = Array.isArray(userData) ? userData[0] : {}
+
+  const { isValid: tokenIsValid, message: tokenValidationMessage } =
+    hashManager().verify(password, payload.password)
+
+  if (!tokenIsValid) {
+    response.status = AppResStatusCodes.BAD_REQUEST
+    response.message = tokenValidationMessage
+    return response
+  }
+
+  response.uid = userId
+  response.queryResponse = userData
 
   return response
 }

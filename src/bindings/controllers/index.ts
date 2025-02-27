@@ -1,1 +1,4 @@
-export { CreateUser } from 'bindings/controllers/user.controller.js'
+export {
+  CreateUser,
+  AuthenticateUser,
+} from 'bindings/controllers/user.controller.js'

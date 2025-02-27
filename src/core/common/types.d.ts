@@ -28,7 +28,11 @@ export type RulesType = {
     }
   }
   handlers: {
-    getValidations: <T>(key: string, value: T) => (() => string)[]
+    getValidations: <T>(
+      key: string,
+      value: T,
+      isAuth: boolean,
+    ) => (() => string)[]
     excValidations?: (<T>(key: string, value: T) => string)[]
   }
 }
@@ -39,7 +43,7 @@ export type GenSecretsReturnRes = {
   payload: unknown
 }
 
-export type Adapters = {
+export type UserAdapters = {
   UserDataAdapter: UserDataInterface
 }
 

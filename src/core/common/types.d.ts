@@ -1,4 +1,5 @@
-import { AppResponseStatus } from '@core/common/constants.ts'
+import { AppResStatusCodes } from '@core/common/constants.ts'
+import { UserDataInterface } from '@core/storage-interface'
 
 export type validationResult = {
   isValid: boolean
@@ -32,16 +33,20 @@ export type RulesType = {
   }
 }
 
-export type AppCreateUserResponse = {
-  userId: string
-  token: string
-  queryResponse: unknown
-  message: string
-  status: AppResponseStatus
-}
-
 export type GenSecretsReturnRes = {
   isValid: boolean
   message: string
   payload: unknown
+}
+
+export type Adapters = {
+  UserDataAdapter: UserDataInterface
+}
+
+// Shared
+export interface CoreAppResponse {
+  status: AppResStatusCodes
+  uid: string
+  queryResponse: unknown | null
+  message: string
 }

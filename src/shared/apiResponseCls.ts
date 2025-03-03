@@ -27,7 +27,7 @@ export class ApiResponse {
 export class AppError {
   status: number = ResponseStatusCodes.INTERNAL_SERVER_ERROR
   cause: unknown = null
-  stack: string = ''
+  stack?: string = ''
 
   constructor(
     status: number,
@@ -37,5 +37,35 @@ export class AppError {
     this.status = status
     this.cause = cause ?? null
     this.stack = stack ?? ''
+  }
+
+  static strigifyAppError(
+    status: number,
+    cause: Record<string, unknown> | string | null,
+    stack?: string,
+  ) {
+    return JSON.stringify(new AppError(status, cause, stack))
+  }
+
+  static generateGlobalErrorObject(error: AppError | Error) {
+    const errorObject = {
+      status: ResponseStatusCodes.INTERNAL_SERVER_ERROR,
+      cause: 'Something went wrong',
+      stack: '',
+    }
+
+    if (error instanceof AppError) {
+      errorObject.status = error.status
+      errorObject.cause = error.cause?.toString() ?? ''
+      errorObject.stack = error.stack ?? ''
+      return errorObject
+    }
+
+    if (error instanceof Error) {
+      errorObject.cause = error.message ?? ''
+      return errorObject
+    }
+
+    return error
   }
 }

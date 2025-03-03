@@ -1,4 +1,3 @@
-import { AppLoggerInterface } from '@bindings/logger-interface'
 import { AppResStatusCodes } from '@core/common/constants.ts'
 import { UserDataInterface } from '@core/storage-interface'
 
@@ -25,14 +24,28 @@ export type RulesType = {
         minLen: number | null
         maxLen: number | null
         enumList: Record<string, unknown> | null
+        children?:
+          | {
+              [key: string]: {
+                description: string
+                validations: RulesType['fields'][string]['validations']
+              }
+            }
+          | {
+              description: string
+              validations: {
+                childLen?: number | null
+              } & RulesType['fields'][string]['validations']
+            }
       }
+      // validationHandlers?: unknown
     }
   }
-  handlers: {
+  handlers?: {
     getValidations: <T>(
       key: string,
       value: T,
-      isAuth: boolean,
+      isAuth?: boolean,
     ) => (() => string)[]
     excValidations?: (<T>(key: string, value: T) => string)[]
   }
@@ -46,7 +59,6 @@ export type GenSecretsReturnRes = {
 
 export type UserAdapters = {
   UserDataAdapter: UserDataInterface
-  LoggerAdapter: AppLoggerInterface
 }
 
 // Shared

@@ -1,23 +1,17 @@
-import { Gender } from '@core/common/constants.js'
+import { Gender, ID_PATTERN } from '@core/common/constants.js'
 import { RulesType } from '@core/common/types.js'
-import {
-  enumValidation,
-  formatValidation,
-  lengthValidation,
-  mandatoryFieldValidation,
-  typeValidation,
-} from 'core/common/validations.js'
 
 export const Rules: RulesType = {
   fields: {
     userId: {
+      //  Not considered for validation
       description: "Hex ID that uniquely identifies the user's document",
       validations: {
         type: 'string',
         required: true,
-        format: /^[0-9a-fA-F]{16}$/,
-        minLen: 16,
-        maxLen: 16,
+        format: ID_PATTERN.genIdRegex(),
+        minLen: 31,
+        maxLen: 31,
         enumList: null,
       },
     },
@@ -88,19 +82,6 @@ export const Rules: RulesType = {
         maxLen: null,
         enumList: null,
       },
-    },
-  },
-  handlers: {
-    getValidations: <T>(key: string, value: T): (() => string)[] => {
-      const { required, type, format, minLen, maxLen, enumList } =
-        Rules.fields[key].validations
-      return [
-        () => mandatoryFieldValidation<typeof value>(value, required),
-        () => typeValidation<typeof value>(value, type),
-        () => lengthValidation(value as string, minLen, maxLen),
-        () => formatValidation(value as string, format),
-        () => enumValidation<typeof value>(value, enumList),
-      ]
     },
   },
 }

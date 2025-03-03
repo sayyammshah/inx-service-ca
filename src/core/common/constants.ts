@@ -1,5 +1,8 @@
-export const MODULE_NAME = 'CORE'
-
+export const MODULE_NAME = 'M_CORE'
+export const ID_PATTERN = {
+  genIdRegex: (length: number = 31): RegExp =>
+    new RegExp(`^[0-9a-fA-F]{${length}}$`),
+}
 export enum Gender {
   MALE = 'Male',
   FEMALE = 'Female',
@@ -8,12 +11,12 @@ export enum Gender {
 
 // Errors
 export enum ValidationErrors {
-  REQUIRED = 'Value is required',
-  TYPE = 'Has invalid type',
-  INVALID = 'Invalid value provided',
-  LENGTH_MIN = 'Expected minimum length is',
-  LENGTH_MAX = 'Expected maximum length is',
-  FORMAT = 'Has invalid format',
+  REQUIRED = 'value is required',
+  TYPE = 'has invalid type',
+  INVALID = 'invalid value provided',
+  LENGTH_MIN = 'expected minimum length is',
+  LENGTH_MAX = 'expected maximum length is',
+  FORMAT = 'has invalid format',
 }
 export enum CoreUserErrorMsg {
   USER_EXISTS = 'Account already exists.',
@@ -35,9 +38,10 @@ export const AppResStatusCodes = {
   OK: 200,
   CREATED: 201,
   BAD_REQUEST: 400,
-  NOT_FOUND: 404,
-  FORBIDDEN: 403,
   UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  CONFLICT: 409,
   INTERNAL_SERVER_ERROR: 500,
 }
 

@@ -9,7 +9,6 @@ import { ResponseStatusCodes } from 'shared/constants.js'
 import { AppError } from 'shared/apiResponseCls.js'
 import { fileURLToPath } from 'node:url'
 import { USER_PROJECTIONS, UserErrorMsg } from '@bindings/common/constants.js'
-import { AppLoggerAdapter } from '@bindings/logger'
 
 /**
  * This function is responsible for creating a new user account.
@@ -32,12 +31,11 @@ export async function CreateUser(
   let response: ControllerResponse | null = null
 
   if (Object.keys(body).length === 0) {
-    const appError = new AppError(
+    const appError = AppError.strigifyAppError(
       ResponseStatusCodes.BAD_REQUEST,
       UserErrorMsg.INVALID_PARAMS,
       `${fileURLToPath(import.meta.url)} ${CreateUser.name}`,
     )
-    logger.error(requestContext, `${appError}`)
     throw appError
   }
 
@@ -47,22 +45,20 @@ export async function CreateUser(
   const result: CoreAppResponse = await CreateUserAccount(
     {
       UserDataAdapter: new UserDataAdapter(),
-      LoggerAdapter: new AppLoggerAdapter(requestContext),
     },
     payload,
   )
 
   if (result.status !== ResponseStatusCodes.CREATED) {
-    const errMsg = new AppError(
+    const errMsg = AppError.strigifyAppError(
       result.status ?? ResponseStatusCodes.INTERNAL_SERVER_ERROR,
       `${UserErrorMsg.FAILED_ACCOUNT_CREATION}${result.message}`,
       `${fileURLToPath(import.meta.url)} ${CreateUser.name}`,
     )
-    logger.error(requestContext, `${errMsg}`)
     throw errMsg
   }
   // Generate Token - Attached it to Response
-  logger.error(requestContext, `Generating Token`)
+  logger.info(requestContext, `Generating Token`)
   const token: string = tokenManager().generate({
     userId: result.uid,
     name: payload.name,
@@ -73,7 +69,7 @@ export async function CreateUser(
     token,
   }
 
-  logger.error(requestContext, `User created successfully`)
+  logger.info(requestContext, `User created successfully`)
   return response
 }
 
@@ -107,17 +103,15 @@ export async function AuthenticateUser(
       UserErrorMsg.INVALID_PARAMS,
       `${fileURLToPath(import.meta.url)} ${AuthenticateUser.name}`,
     )
-    logger.error(requestContext, `${appError}`)
     throw appError
   }
 
   // Call core module
-  logger.info(requestContext, `preparing payload DTO`)
+  logger.info(requestContext, `Preparing payload DTO`)
   const payload: UserDto = generateUserDto(body)
   const result = await AuthenticateUserAccount(
     {
       UserDataAdapter: new UserDataAdapter(),
-      LoggerAdapter: new AppLoggerAdapter(requestContext),
     },
     payload,
     { projection: USER_PROJECTIONS },
@@ -129,12 +123,11 @@ export async function AuthenticateUser(
       `${UserErrorMsg.FAILED_ACCOUNT_AUTH}${result.message}`,
       `${fileURLToPath(import.meta.url)} ${AuthenticateUser.name}`,
     )
-    logger.error(requestContext, `${errMsg}`)
     throw errMsg
   }
 
   // Generate Token - Attached it to Response
-  logger.error(requestContext, `Generating Token`)
+  logger.info(requestContext, `Generating Token`)
   const token: string = tokenManager().generate({
     userId: result.uid,
     name: payload.name,
@@ -145,6 +138,6 @@ export async function AuthenticateUser(
     token,
   }
 
-  logger.error(requestContext, `User authenticated successfully`)
+  logger.info(requestContext, `User authenticated successfully`)
   return response
 }

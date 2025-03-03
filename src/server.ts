@@ -45,20 +45,11 @@ app.use('/v1/api/user', userRouter)
 app.use(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (err: Error | AppError, req: Request, res: Response, next: NextFunction) => {
-    const errObject = {
-      status: err instanceof AppError ? err.status : 500,
-      stack: err.stack ?? '',
-      cause:
-        err instanceof AppError
-          ? err.cause
-          : err instanceof Error
-            ? err.message
-            : (err ?? 'Something went wrong'),
-    }
+    const errObject = AppError.generateGlobalErrorObject(err)
     res.status(errObject.status).json(
       new ApiResponse(errObject.status, null, {
         cause: errObject.cause,
-        stack: errObject.stack,
+        stack: errObject.stack ?? '',
       }),
     )
   },

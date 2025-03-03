@@ -7,6 +7,10 @@ const isDevelopment = process.env.NODE_ENV === ENVS.DEV
 const loggerOptions: LoggerOptions = {
   name: 'inx',
   timestamp: true,
+  redact: {
+    paths: ['data.token'],
+    censor: '***',
+  },
   transport: {
     target: 'pino-pretty',
     options: {

@@ -62,7 +62,7 @@ This Contains all the database nodels and validations rules applies on this. Als
 
 | Field     | Type       | Required | Min Length | Max Length | Format/Regex          | Description                                                    |
 | --------- | ---------- | -------- | ---------- | ---------- | --------------------- | -------------------------------------------------------------- |
-| entityId  | _string_   | Yes      | 16         | 16         | `/^[0-9a-fA-F]{16}$/` | Hex ID that uniquely identifies the post.                      |
+| insightId | _string_   | Yes      | 16         | 16         | `/^[0-9a-fA-F]{16}$/` | Hex ID that uniquely identifies the post.                      |
 | authorId  | _string_   | Yes      | 16         | 16         | `/^[0-9a-fA-F]{16}$/` | Reference to the `userId` from the Users model.                |
 | title     | _string_   | Yes      | 5          | 100        | -                     | Post title.                                                    |
 | content   | _string_   | Yes      | 5          | 500        | -                     | Post content.                                                  |
@@ -99,7 +99,7 @@ This Contains all the database nodels and validations rules applies on this. Als
 | Field        | Type               | Required | Min Length | Max Length | Format/Regex          | Description                                                          |
 | ------------ | ------------------ | -------- | ---------- | ---------- | --------------------- | -------------------------------------------------------------------- |
 | threadId     | _string_           | Yes      | 16         | 16         | `/^[0-9a-fA-F]{16}$/` | Unique identifier for this thread entry.                             |
-| entityId     | _string_           | Yes      | 16         | 16         | `/^[0-9a-fA-F]{16}$/` | Linked post's unique identifier (references Insights `entity`).      |
+| insightId    | _string_           | Yes      | 16         | 16         | `/^[0-9a-fA-F]{16}$/` | Linked post's unique identifier (references Insights `entity`).      |
 | authorId     | _string_           | Yes      | 16         | 16         | `/^[0-9a-fA-F]{16}$/` | Comment author's user ID (matches Users `userId`).                   |
 | parentThread | _string_ or _null_ | Yes      | 16         | 16         | `/^[0-9a-fA-F]{16}$/` | Direct parent thread's ID (null if top-level comment).               |
 | rootThread   | _string_           | Yes      | 16         | 16         | `/^[0-9a-fA-F]{16}$/` | Original top-level thread's ID (never null).                         |

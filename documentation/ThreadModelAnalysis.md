@@ -96,5 +96,5 @@ Using rootThread will make document more query efficient
 - This model supports _2-level nested replies_ efficiently.
 - The `rootThread` helps group entire conversations under the same root comment.
 - The _Materialized Path_ allows for future scalability beyond 2-level nesting.
-- _Optimized for querying_ using `entityId`, `rootThread`, and `parentThread`.
+- _Optimized for querying_ using `insightId`, `rootThread`, and `parentThread`.
 - _Scalable & performant_ for large-scale applications.

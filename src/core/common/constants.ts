@@ -1,8 +1,13 @@
 export const MODULE_NAME = 'M_CORE'
 export const ID_PATTERN = {
   genIdRegex: (length: number = 31): RegExp =>
-    new RegExp(`^[0-9a-fA-F]{${length}}$`),
+    new RegExp(`^[0-9a-zA-Z]{${length}}$`),
 }
+
+export const RULES_CONSTANTS = {
+  LENTH_DELIMITER: '-',
+}
+
 export enum Gender {
   MALE = 'Male',
   FEMALE = 'Female',

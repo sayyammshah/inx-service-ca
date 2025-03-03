@@ -1,12 +1,5 @@
 import { ID_PATTERN } from '@core/common/constants.js'
 import { RulesType } from '@core/common/types.js'
-import {
-  enumValidation,
-  formatValidation,
-  lengthValidation,
-  mandatoryFieldValidation,
-  typeValidation,
-} from 'core/common/validations.js'
 
 export const RulesInsight: RulesType = {
   fields: {
@@ -16,9 +9,10 @@ export const RulesInsight: RulesType = {
         type: 'string',
         required: true,
         format: ID_PATTERN.genIdRegex(),
-        minLen: 31,
-        maxLen: 31,
+        charLen: '31-31',
+        arrLen: null,
         enumList: null,
+        children: null,
       },
     },
     authorId: {
@@ -27,126 +21,100 @@ export const RulesInsight: RulesType = {
         type: 'string',
         required: true,
         format: ID_PATTERN.genIdRegex(),
-        minLen: 31,
-        maxLen: 31,
+        charLen: '31-31',
+        arrLen: null,
         enumList: null,
+        children: null,
       },
     },
     title: {
-      description: 'Post title.',
+      description: 'Post title',
       validations: {
         type: 'string',
         required: true,
         format: null,
-        minLen: 5,
-        maxLen: 100,
+        charLen: '5-100',
+        arrLen: null,
         enumList: null,
+        children: null,
       },
     },
     content: {
-      description: 'Post content.',
+      description: 'Post content',
       validations: {
         type: 'string',
         required: true,
         format: null,
-        minLen: 5,
-        maxLen: 500,
+        charLen: '5-500',
+        arrLen: null,
         enumList: null,
+        children: null,
       },
     },
     tags: {
-      description: 'Tags (max 5 tags, 15 chars each).',
+      description: 'Tags',
       validations: {
         type: 'array',
         required: false,
         format: null,
-        minLen: null,
-        maxLen: null,
+        charLen: null,
+        arrLen: 5,
         enumList: null,
-        children: {
-          description: 'max 5 tags, 15 chars each',
-          validations: {
-            type: 'string',
-            required: false,
-            format: null,
-            minLen: 3,
-            maxLen: null,
-            enumList: null,
-            childLen: 5,
-          },
-        },
+        children: null,
       },
     },
     stats: {
-      description:
-        'Engagement metrics (`likes`, `dislikes`, `views`, `comments`).',
+      description: 'Engagement metrics',
       validations: {
         type: 'object',
         required: true,
         format: null,
-        minLen: null,
-        maxLen: null,
+        charLen: null,
+        arrLen: null,
         enumList: null,
         children: {
           likes: {
-            description: 'Number of likes.',
+            description: 'Number of likes',
             validations: {
               type: 'number',
               required: false,
               format: null,
-              minLen: null,
-              maxLen: null,
+              charLen: null,
               enumList: null,
             },
           },
           dislikes: {
-            description: 'Number of dislikes.',
+            description: 'Number of dislikes',
             validations: {
               type: 'number',
               required: false,
               format: null,
-              minLen: null,
-              maxLen: null,
+              charLen: null,
               enumList: null,
             },
           },
           views: {
-            description: 'Number of views.',
+            description: 'Number of views',
             validations: {
               type: 'number',
               required: false,
               format: null,
-              minLen: null,
-              maxLen: null,
+              charLen: null,
               enumList: null,
             },
           },
           comments: {
-            description: 'Number of comments.',
+            description: 'Number of comments',
             validations: {
               type: 'number',
               required: false,
               format: null,
-              minLen: null,
-              maxLen: null,
+              charLen: null,
               enumList: null,
             },
           },
         },
       },
-    },
-  },
-  handlers: {
-    getValidations: <T>(key: string, value: T): (() => string)[] => {
-      const { required, type, format, minLen, maxLen, enumList } =
-        RulesInsight.fields[key].validations
-      return [
-        () => mandatoryFieldValidation<typeof value>(value, required),
-        () => typeValidation<typeof value>(value, type),
-        () => lengthValidation(value as string, minLen, maxLen),
-        () => formatValidation(value as string, format),
-        () => enumValidation<typeof value>(value, enumList),
-      ]
     },
   },
 }

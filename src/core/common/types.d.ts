@@ -6,6 +6,11 @@ export type validationResult = {
   message: string
 }
 
+export type ChildValidations = Omit<
+  RulesType['fields'][string]['validations'],
+  'arrLen' | 'children'
+>
+
 export type RulesType = {
   fields: {
     [key: string]: {
@@ -21,33 +26,17 @@ export type RulesType = {
           | 'enum'
         required: boolean
         format: RegExp | string | null
-        minLen: number | null
-        maxLen: number | null
+        charLen: string | null // add chararacter length '-' seperated
+        arrLen: number | null // applicable only if array
         enumList: Record<string, unknown> | null
-        children?:
-          | {
-              [key: string]: {
-                description: string
-                validations: RulesType['fields'][string]['validations']
-              }
-            }
-          | {
-              description: string
-              validations: {
-                childLen?: number | null
-              } & RulesType['fields'][string]['validations']
-            }
+        children: {
+          [key: string]: {
+            description: string
+            validations: ChildValidations
+          }
+        } | null
       }
-      // validationHandlers?: unknown
     }
-  }
-  handlers?: {
-    getValidations: <T>(
-      key: string,
-      value: T,
-      isAuth?: boolean,
-    ) => (() => string)[]
-    excValidations?: (<T>(key: string, value: T) => string)[]
   }
 }
 

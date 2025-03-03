@@ -8,3 +8,12 @@ export type UserDto = {
   gender?: Gender | null
   profilePicture?: string | null
 }
+
+export type InsightDto = {
+  insightId: string
+  authorId: string
+  title: string
+  content: string
+  tags?: string[]
+  stats?: Record<string, number>
+}

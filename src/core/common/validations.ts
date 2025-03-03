@@ -1,16 +1,20 @@
-import { ValidationErrors } from './constants.js'
-import { RulesType, validationResult } from './types.js'
+import { RULES_CONSTANTS, ValidationErrors } from './constants.js'
+import { ChildValidations, RulesType, validationResult } from './types.js'
 
 export function mandatoryFieldValidation<T>(
   value: T,
   required: boolean,
 ): string {
-  if (required && !value) return ValidationErrors.REQUIRED
+  if (required && !value) {
+    return ValidationErrors.REQUIRED
+  }
   return ''
 }
 
 export function typeValidation<T = string>(value: T, type: string): string {
   if (!value) return ''
+
+  if (type === 'array' && Array.isArray(value)) return ''
 
   if (typeof value !== type) return ValidationErrors.TYPE
   return ''
@@ -57,11 +61,39 @@ export function enumValidation<T>(
 export const entityValidator = <T>(
   field: string,
   value: T,
-  validations: RulesType['fields'][string]['validations'],
+  validations: RulesType['fields'][string]['validations'] | ChildValidations,
 ): validationResult => {
-  const { required, type, format, minLen, maxLen, enumList } = validations
+  const { required, type, format, charLen, enumList } = validations
+  const children = 'children' in validations ? validations.children : null
+  let [minLen, maxLen]: Array<number | null> = [null, null]
 
-  const message =
+  let validationErrorMessage = ''
+
+  if (type === 'object' && children) {
+    for (const key of Object.keys(children)) {
+      validationErrorMessage = entityValidator(
+        key,
+        (value as Record<string, unknown>)[key],
+        children[key].validations,
+      ).message
+      if (validationErrorMessage) break
+    }
+  }
+
+  if (validationErrorMessage) {
+    return {
+      isValid: false,
+      message: `'${field}'/${validationErrorMessage}`,
+    }
+  }
+
+  if (charLen) {
+    ;[minLen, maxLen] = charLen
+      .split(RULES_CONSTANTS.LENTH_DELIMITER)
+      .map((val) => parseInt(val))
+  }
+
+  validationErrorMessage =
     (required && mandatoryFieldValidation<typeof value>(value, required)) ||
     (type && typeValidation<typeof value>(value, type)) ||
     ((minLen || maxLen) && lengthValidation(value as string, minLen, maxLen)) ||
@@ -70,7 +102,10 @@ export const entityValidator = <T>(
     ''
 
   return {
-    isValid: message == '',
-    message: message !== '' ? `'${field}' ${message}` : '',
+    isValid: validationErrorMessage == '',
+    message:
+      validationErrorMessage !== ''
+        ? `'${field}' ${validationErrorMessage}`
+        : '',
   }
 }

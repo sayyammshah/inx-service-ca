@@ -1,12 +1,12 @@
 import { User, UserDto } from '@core/business'
 import { generateId, hashManager } from '@core/common/utils.js'
-import { UserAdapters, CoreAppResponse } from '@core/common/types.js'
+import { UserAdapters } from '@core/common/types.js'
 import {
   AppResStatusCodes,
   CoreUserErrorMsg,
   MODULE_NAME,
 } from '@core/common/constants.js'
-import { CoreAppError } from '@core/common/coreAppError.js'
+import { CoreAppError, CoreAppResponse } from '@core/common/coreAppResponse.js'
 
 /**
  * Creates a new user account in the system.
@@ -26,6 +26,7 @@ export const CreateUserAccount = async (
   payload: UserDto,
 ): Promise<CoreAppResponse> => {
   const { UserDataAdapter } = adapters
+  const response = new CoreAppResponse()
 
   const { isValid, message } = User.validate(payload)
   if (!isValid)
@@ -37,12 +38,7 @@ export const CreateUserAccount = async (
   const filter = {
     email: payload.email,
   }
-  const response: CoreAppResponse = {
-    uid: '',
-    queryResponse: null,
-    message: '',
-    status: AppResStatusCodes.CREATED,
-  }
+
   const userAlreadyExists = await UserDataAdapter.read(filter)
 
   if (Array.isArray(userAlreadyExists) && userAlreadyExists.length > 0) {
@@ -74,6 +70,7 @@ export const AuthenticateUserAccount = async (
   },
 ): Promise<CoreAppResponse> => {
   const { UserDataAdapter } = adapters
+  const response = new CoreAppResponse()
 
   const { isValid, message } = User.validate(payload, true)
   if (!isValid)
@@ -86,12 +83,6 @@ export const AuthenticateUserAccount = async (
 
   const filter = {
     email: payload.email,
-  }
-  const response: CoreAppResponse = {
-    uid: '',
-    queryResponse: null,
-    message: '',
-    status: AppResStatusCodes.OK,
   }
 
   const userData = await UserDataAdapter.read(filter, projection)

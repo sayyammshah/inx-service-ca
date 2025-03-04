@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
-import { userRouter } from '@bindings/express-routes'
+import { UserRouter, InsightRouter } from '@bindings/express-routes'
 import { MongoDBClient } from '@infra/clients'
 import { httpLogger, logger } from 'shared/logger.js'
 import { ApiResponse, AppError } from 'shared/apiResponseCls.js'
@@ -37,7 +37,8 @@ app.get('/health-check', (req, res) => {
   })
 })
 
-app.use('/v1/api/user', userRouter)
+app.use('/v1/api/user', UserRouter)
+app.use('/v1/api/inx', InsightRouter)
 
 // ------------------------ Routes ------------------------
 

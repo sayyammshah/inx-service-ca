@@ -3,12 +3,12 @@ import { AuthenticateUserAccount, CreateUserAccount } from '@core/app'
 import { UserDataAdapter } from '@bindings/mongo-database'
 import { logger } from 'shared/logger.js'
 import { ControllerResponse, RequestContext } from '@bindings/common/types.js'
-import { CoreAppResponse } from '@core/common/types.js'
 import { tokenManager } from '@bindings/common/utils.js'
 import { ResponseStatusCodes } from 'shared/constants.js'
 import { AppError } from 'shared/apiResponseCls.js'
 import { fileURLToPath } from 'node:url'
 import { USER_PROJECTIONS, UserErrorMsg } from '@bindings/common/constants.js'
+import { CoreAppResponse } from '@core/common/coreAppResponse.js'
 
 /**
  * This function is responsible for creating a new user account.

@@ -1,5 +1,6 @@
 export enum COLLECTION_NAMES {
   USER = 'InxUsers',
+  INSIGHTS = 'InxInsights',
 }
 
 // Token Constants

@@ -4,8 +4,22 @@ export const ID_PATTERN = {
     new RegExp(`^[0-9a-zA-Z]{${length}}$`),
 }
 
+export const TIME_CONVERSIONS = {
+  // SECONDS: 1000,
+  // HOURS: 1000 * 60 * 60,
+  MINUTES: 1000 * 60,
+  // DAYS: 1000 * 60 * 60 * 24,
+  // WEEKS: 1000 * 60 * 60 * 24 * 7,
+  // MONTHS: 1000 * 60 * 60 * 24 * 7 * 4,
+}
+
 export const RULES_CONSTANTS = {
   LENTH_DELIMITER: '-',
+}
+
+export const BR_CONSTANTS = {
+  CAN_EDIT_TIME_WINDOW: 60, // 60 Minutes
+  CAN_ADD_TIME_WINDOW: 1, // 1 Minutes
 }
 
 export enum Gender {
@@ -14,7 +28,7 @@ export enum Gender {
   OTHER = 'Other',
 }
 
-// Errors
+// Messages
 export enum ValidationErrors {
   REQUIRED = 'value is required',
   TYPE = 'has invalid type',
@@ -28,6 +42,10 @@ export enum CoreUserErrorMsg {
   USER_NOT_FOUND = 'User not found',
   INCORRECT_PASSWORD = 'Incorrect password',
   INVALID_PARAMS = 'Invalid params',
+}
+export enum BusinessRulesMsgs {
+  CAN_EDIT = "You can edit an insight only within 1 hour after it's created.",
+  CAN_ADD = 'You can add comments 1 minute after the insight has been created.',
 }
 
 // Hash Constants

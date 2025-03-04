@@ -14,6 +14,8 @@ export type InsightDto = {
   authorId: string
   title: string
   content: string
-  tags?: string[]
-  stats?: Record<string, number>
+  tags?: string[] | []
+  stats?: Record<string, number> | null
+  createdAt?: number | null
+  updatedAt?: number | null
 }

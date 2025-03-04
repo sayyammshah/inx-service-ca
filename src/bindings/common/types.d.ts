@@ -1,4 +1,4 @@
-import { CoreAppResponse } from '@core/common/types.js'
+import { CoreAppResponse } from '@core/common/coreAppResponse.ts'
 import { IncomingHttpHeaders } from 'node:http'
 import { RequestMethods } from 'shared/constants.ts'
 

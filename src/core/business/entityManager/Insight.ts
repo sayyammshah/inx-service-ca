@@ -2,6 +2,8 @@ import { validationResult } from '@core/common/types.js'
 import { InsightDto } from '../dto/entityDto.js'
 import { RulesInsight } from '../rulesEngine/Insight.core.js'
 import { entityValidator } from '@core/common/validations.js'
+import { BusinessRulesMsgs } from '@core/common/constants.js'
+import { convertDate, Operations } from '@core/common/utils.js'
 
 export class Insights {
   // Immutable Properties
@@ -35,8 +37,8 @@ export class Insights {
     authorId: string
     title: string
     content: string
-    tags?: string[]
-    stats?: Record<string, number>
+    tags?: string[] | []
+    stats?: Record<string, number> | null
   }) {
     this.insightId = insightId
     this.authorId = authorId
@@ -73,6 +75,70 @@ export class Insights {
     return {
       isValid: !message,
       message: message,
+    }
+  }
+
+  /**
+   * Insight can be edited only within 1 hour of creation to prevent abuse of historical content.
+   *
+   * @param insight - The insight object containing the creation timestamp.
+   * @returns An object containing a boolean indicating whether the insight can be edited and a message describing the reason if applicable
+   */
+  static canEdit(insight: Partial<InsightDto>): {
+    canEdit: boolean
+    message: string
+  } {
+    let canEditPost = false
+
+    if (!RulesInsight.core)
+      return {
+        canEdit: false,
+        message: 'Something went wrong',
+      }
+    const { condition } = RulesInsight.core.CanEdit
+    const validateCondition = Operations()[condition.operator]
+    const updatedArgs = condition.args.map((arg: unknown) => {
+      return typeof arg === 'string'
+        ? convertDate(insight[arg as keyof InsightDto] as number)
+        : arg
+    })
+    canEditPost = validateCondition(updatedArgs) === condition.expected
+
+    return {
+      canEdit: canEditPost,
+      message: !canEditPost ? BusinessRulesMsgs.CAN_EDIT : '',
+    }
+  }
+
+  /**
+   * Comments on a insights can only be added after 1 minute after insight has been created to prevent rushed/spammy replies.
+   *
+   * @param insight - The insight object containing the creation timestamp.
+   * @returns An object containing a boolean indicating whether the comment can be added and a message describing the reason if applicable.
+   */
+  static canAdd(insight: Partial<InsightDto>): {
+    canAdd: boolean
+    message: string
+  } {
+    let canAddComment = false
+
+    if (!RulesInsight.core)
+      return {
+        canAdd: false,
+        message: 'Something went wrong',
+      }
+    const { condition } = RulesInsight.core.CanAdd
+    const validateCondition = Operations()[condition.operator]
+    const updatedArgs = condition.args.map((arg: unknown) => {
+      return typeof arg === 'string'
+        ? convertDate(insight[arg as keyof InsightDto] as number)
+        : arg
+    })
+    canAddComment = validateCondition(updatedArgs) === condition.expected
+
+    return {
+      canAdd: canAddComment,
+      message: !canAddComment ? BusinessRulesMsgs.CAN_ADD : '',
     }
   }
 }

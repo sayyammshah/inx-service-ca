@@ -65,6 +65,7 @@ export const entityValidator = <T>(
 ): validationResult => {
   const { required, type, format, charLen, enumList } = validations
   const children = 'children' in validations ? validations.children : null
+  const arrLen = 'arrLen' in validations ? validations.arrLen : null
   let [minLen, maxLen]: Array<number | null> = [null, null]
 
   let validationErrorMessage = ''
@@ -78,6 +79,11 @@ export const entityValidator = <T>(
       ).message
       if (validationErrorMessage) break
     }
+  } else if (type === 'array' && arrLen) {
+    validationErrorMessage =
+      (value as Array<string>).length > arrLen
+        ? `${ValidationErrors.LENGTH_MAX} ${arrLen}`
+        : ''
   }
 
   if (validationErrorMessage) {

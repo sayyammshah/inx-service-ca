@@ -1,3 +1,2 @@
-import router from 'bindings/routes/express/user.route.js'
-
-export { router as userRouter }
+export { UserRouter } from './user.route.js'
+export { InsightRouter } from './insight.route.js'

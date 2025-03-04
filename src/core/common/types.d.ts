@@ -1,5 +1,7 @@
-import { AppResStatusCodes } from '@core/common/constants.ts'
-import { UserDataInterface } from '@core/storage-interface'
+import {
+  InsightDataInterface,
+  UserDataInterface,
+} from '@core/storage-interface'
 
 export type validationResult = {
   isValid: boolean
@@ -38,6 +40,18 @@ export type RulesType = {
       }
     }
   }
+  core?: {
+    [key: string]: {
+      name: string
+      description: string
+      condition: {
+        field: string
+        operator: string
+        args: Record<string, unkown>
+        expected: unknown
+      }
+    }
+  }
 }
 
 export type GenSecretsReturnRes = {
@@ -46,17 +60,15 @@ export type GenSecretsReturnRes = {
   payload: unknown
 }
 
+// Adapters
 export type UserAdapters = {
   UserDataAdapter: UserDataInterface
 }
+export type InsightAdapters = {
+  InsightDataAdapter: InsightDataInterface
+}
 
 // Shared
-export interface CoreAppResponse {
-  status: AppResStatusCodes
-  uid: string
-  queryResponse: unknown | null
-  message: string
-}
 export interface CoreRequestContext {
   method: RequestMethods
   requestId: string // Unique identifier for tracking the request within this service

@@ -7,7 +7,7 @@ export const RulesInsight: RulesType = {
       description: 'Hex ID that uniquely identifies the post',
       validations: {
         type: 'string',
-        required: true,
+        required: false,
         format: ID_PATTERN.genIdRegex(),
         charLen: '31-31',
         arrLen: null,
@@ -114,6 +114,30 @@ export const RulesInsight: RulesType = {
             },
           },
         },
+      },
+    },
+  },
+  core: {
+    CanEdit: {
+      name: 'CAN_EDIT',
+      description:
+        'Insight can be edited only within 1 hour of creation to prevent abuse of historical content.',
+      condition: {
+        field: 'createdAt',
+        operator: 'lessThan',
+        args: ['createdAt', 60], // createdAt < 60 minutes
+        expected: true,
+      },
+    },
+    CanAdd: {
+      name: 'CAN_ADD',
+      description:
+        'Comments on a insights can only be added after 1 minute after insight has been created to prevent rushed/spammy replies.',
+      condition: {
+        field: 'createdAt',
+        operator: 'greaterThan',
+        args: ['createdAt', 2], // createdAt > 2 minutes
+        expected: true,
       },
     },
   },

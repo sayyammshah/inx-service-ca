@@ -95,10 +95,10 @@ export const AuthenticateUserAccount = async (
 
   const { password, userId } = Array.isArray(userData) ? userData[0] : {}
 
-  const { isValid: tokenIsValid, message: tokenValidationMessage } =
+  const { isValid: passwordIsValid, message: tokenValidationMessage } =
     hashManager().verify(password, payload.password)
 
-  if (!tokenIsValid) {
+  if (!passwordIsValid) {
     response.status = AppResStatusCodes.BAD_REQUEST
     response.message = tokenValidationMessage
     return response

@@ -1,5 +1,9 @@
 import { InsightDto, Insights } from '@core/business'
-import { AppResStatusCodes, MODULE_NAME } from '@core/common/constants.js'
+import {
+  AppResStatusCodes,
+  CoreUserErrorMsg,
+  MODULE_NAME,
+} from '@core/common/constants.js'
 import { CoreAppError, CoreAppResponse } from '@core/common/coreAppResponse.js'
 import { InsightAdapters } from '@core/common/types.js'
 import { generateId } from '@core/common/utils.js'
@@ -30,6 +34,33 @@ export const CreateInsightPost = async (
   response.queryResponse = await InsightDataAdapter.create(newInsight)
   response.uid = insightId
   response.status = AppResStatusCodes.CREATED
+
+  return response
+}
+
+export const FetchInsightsPosts = async (
+  adapters: InsightAdapters,
+  queryParams?: Record<string, string> | undefined,
+  options?: {
+    projection: Record<string, number>
+  },
+): Promise<CoreAppResponse> => {
+  const { InsightDataAdapter } = adapters
+  const response = new CoreAppResponse()
+
+  const { projection = {} } = options || {}
+  let filter = {}
+  if (queryParams) filter = queryParams
+
+  const insightsData = await InsightDataAdapter.read(filter, projection)
+
+  if (Array.isArray(insightsData) && insightsData.length == 0) {
+    response.status = AppResStatusCodes.OK
+    response.message = CoreUserErrorMsg.NO_RECORDS
+    return response
+  }
+
+  response.queryResponse = insightsData
 
   return response
 }

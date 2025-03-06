@@ -3,7 +3,7 @@ import { IncomingHttpHeaders } from 'node:http'
 import { RequestMethods } from 'shared/constants.ts'
 
 export interface ControllerResponse extends CoreAppResponse {
-  token: string
+  token?: string
 }
 
 export type GenSecretsReturnRes = {

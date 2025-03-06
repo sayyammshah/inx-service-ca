@@ -37,7 +37,7 @@ export const tokenManager = () => {
 
   function verify(token: string): GenSecretsReturnRes {
     const response = {
-      isValid: false,
+      isValid: true,
       message: '',
       payload: {},
     }
@@ -48,8 +48,11 @@ export const tokenManager = () => {
       .update(payload)
       .digest('base64')
 
-    if (signature !== decodedSignature)
+    if (signature !== decodedSignature) {
       response.message = UserErrorMsg.INVALID_TOKEN
+      response.isValid = false
+      return response
+    }
 
     response.payload = JSON.parse(
       Buffer.from(payload, 'base64').toString('utf-8'),

@@ -43,3 +43,9 @@
 | ---------------------------- | ------------------------------------------------------------------ | ------ |
 | **Temporary Account Freeze** | Users can freeze their account for up to **6 months**.             | [ ]    |
 | **Password Reset Cooldown**  | Users can request a password reset only **once every 10 minutes**. | [ ]    |
+
+# Fetch Insights
+
+### Stage 1 - in this stage just fetch based on users created
+
+### Stage 2 - in this stage add mechanism of recommendation

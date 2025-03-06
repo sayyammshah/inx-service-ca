@@ -14,9 +14,10 @@ export const USER_PROJECTIONS = {
   _id: 0,
 }
 
-enum CommonErrorMsg {
+export enum CommonErrorMsg {
   INVALID_PARAMS = 'Invalid Params',
   INVALID_TOKEN = 'Invalid Token',
+  UNAUTHORIZED = 'Unauthorised',
 }
 
 export enum UserErrorMsg {
@@ -25,4 +26,10 @@ export enum UserErrorMsg {
   INVALID_TOKEN = CommonErrorMsg.INVALID_TOKEN,
   FAILED_ACCOUNT_CREATION = 'Failed to create account: ',
   FAILED_ACCOUNT_AUTH = 'Failed to authenticate account: ',
+}
+
+export enum InsightErrorMessage {
+  INVALID_PARAMS = CommonErrorMsg.INVALID_PARAMS,
+  FAILED_TO_CREATE_INSIGHT = 'Failed to create Insight: ',
+  NO_RECORDS = 'No records found: ',
 }

@@ -42,6 +42,7 @@ export enum CoreUserErrorMsg {
   USER_NOT_FOUND = 'User not found',
   INCORRECT_PASSWORD = 'Incorrect password',
   INVALID_PARAMS = 'Invalid params',
+  NO_RECORDS = 'No records found',
 }
 export enum BusinessRulesMsgs {
   CAN_EDIT = "You can edit an insight only within 1 hour after it's created.",

@@ -77,7 +77,7 @@ This Contains all the database nodels and validations rules applies on this. Als
 
 ```typescript
 {
-  entity: string,
+  insightId: string,
   authorId: string,
   parentThread: string | null,
   threadId: string,

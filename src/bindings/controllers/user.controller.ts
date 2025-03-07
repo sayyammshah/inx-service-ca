@@ -31,7 +31,7 @@ export async function CreateUser(
   let response: ControllerResponse | null = null
 
   if (Object.keys(body).length === 0) {
-    const appError = AppError.strigifyAppError(
+    const appError = new AppError(
       ResponseStatusCodes.BAD_REQUEST,
       UserErrorMsg.INVALID_PARAMS,
       `${fileURLToPath(import.meta.url)} ${CreateUser.name}`,
@@ -50,7 +50,7 @@ export async function CreateUser(
   )
 
   if (result.status !== ResponseStatusCodes.CREATED) {
-    const errMsg = AppError.strigifyAppError(
+    const errMsg = new AppError(
       result.status ?? ResponseStatusCodes.INTERNAL_SERVER_ERROR,
       `${UserErrorMsg.FAILED_ACCOUNT_CREATION}${result.message}`,
       `${fileURLToPath(import.meta.url)} ${CreateUser.name}`,

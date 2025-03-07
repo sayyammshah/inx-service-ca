@@ -49,11 +49,15 @@ export function formatValidation(
 
 export function enumValidation<T>(
   value: T,
-  enumList: Record<string, unknown> | null,
+  enumList: Array<unknown> | Record<string, unknown> | null,
 ): string {
   if (!value) return ''
 
-  if (enumList && !Object.values(enumList).includes(value as T))
+  if (
+    enumList &&
+    ((Array.isArray(enumList) && !enumList.includes(value as T)) ||
+      !Object.values(enumList).includes(value as T))
+  )
     return ValidationErrors.INVALID
   return ''
 }

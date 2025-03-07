@@ -26,7 +26,7 @@ export class InsightDataAdapter implements InsightDataInterface {
 
       return response
     } catch (error) {
-      const errorMessage = `Error creating new user: ${error instanceof Error ? `${error.message}` : `${error}`}`
+      const errorMessage = `Error creating new insight: ${error instanceof Error ? `${error.message}` : `${error}`}`
       logger.error(errorMessage)
       throw new Error(errorMessage)
     }

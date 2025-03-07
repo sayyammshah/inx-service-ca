@@ -58,6 +58,7 @@ export const CreateUserAccount = async (
 
   response.uid = userId
   response.queryResponse = await UserDataAdapter.create(newUser)
+  response.status = AppResStatusCodes.CREATED
 
   return response
 }

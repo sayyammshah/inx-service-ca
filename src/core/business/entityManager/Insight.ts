@@ -2,7 +2,7 @@ import { validationResult } from '@core/common/types.js'
 import { InsightDto } from '../dto/entityDto.js'
 import { RulesInsight } from '../rulesEngine/Insight.core.js'
 import { entityValidator } from '@core/common/validations.js'
-import { BusinessRulesMsgs } from '@core/common/constants.js'
+import { BusinessRulesMsgs, RuleKeys } from '@core/common/constants.js'
 import { convertDate, Operations } from '@core/common/utils.js'
 
 export class Insights {
@@ -95,7 +95,7 @@ export class Insights {
         canEdit: false,
         message: 'Something went wrong',
       }
-    const { condition } = RulesInsight.core.CanEdit
+    const { condition } = RulesInsight.core[RuleKeys.CanAdd]
     const validateCondition = Operations()[condition.operator]
     const updatedArgs = condition.args.map((arg: unknown) => {
       return typeof arg === 'string'
@@ -127,7 +127,7 @@ export class Insights {
         canAdd: false,
         message: 'Something went wrong',
       }
-    const { condition } = RulesInsight.core.CanAdd
+    const { condition } = RulesInsight.core[RuleKeys.CanAdd]
     const validateCondition = Operations()[condition.operator]
     const updatedArgs = condition.args.map((arg: unknown) => {
       return typeof arg === 'string'

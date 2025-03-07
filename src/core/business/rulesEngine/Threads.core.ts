@@ -1,7 +1,7 @@
-import { ID_PATTERN, RuleKeys } from '@core/common/constants.js'
+import { ID_PATTERN } from '@core/common/constants.js'
 import { RulesType } from '@core/common/types.js'
 
-export const RulesInsight: RulesType = {
+export const RulesThread: RulesType = {
   fields: {
     insightId: {
       description: 'Hex ID that uniquely identifies the post',
@@ -27,20 +27,56 @@ export const RulesInsight: RulesType = {
         children: null,
       },
     },
-    title: {
-      description: 'Post title',
+    threadId: {
+      description: 'Hex ID that uniquely identifies the thread',
       validations: {
         type: 'string',
-        required: true,
+        required: false,
+        format: ID_PATTERN.genIdRegex(),
+        charLen: '31-31',
+        arrLen: null,
+        enumList: null,
+        children: null,
+      },
+    },
+    parentThread: {
+      description: 'Hex ID that uniquely identifies the parent of thread',
+      validations: {
+        type: 'string',
+        required: false,
+        format: ID_PATTERN.genIdRegex(),
+        charLen: '31-31',
+        arrLen: null,
+        enumList: null,
+        children: null,
+      },
+    },
+    rootThread: {
+      description: 'Hex ID that uniquely identifies the root thread',
+      validations: {
+        type: 'string',
+        required: false,
+        format: ID_PATTERN.genIdRegex(),
+        charLen: '31-31',
+        arrLen: null,
+        enumList: null,
+        children: null,
+      },
+    },
+    path: {
+      description: 'Path to comment or reply to mesure depth',
+      validations: {
+        type: 'string',
+        required: false,
         format: null,
-        charLen: '5-100',
+        charLen: null,
         arrLen: null,
         enumList: null,
         children: null,
       },
     },
     content: {
-      description: 'Post content',
+      description: 'Comment / Reply content',
       validations: {
         type: 'string',
         required: true,
@@ -51,15 +87,16 @@ export const RulesInsight: RulesType = {
         children: null,
       },
     },
-    tags: {
-      description: 'Tags',
+    depth: {
+      description:
+        'Depth will identify weather the content is comment or reply',
       validations: {
-        type: 'array',
-        required: false,
+        type: 'string',
+        required: true,
         format: null,
         charLen: null,
-        arrLen: 5,
-        enumList: null,
+        arrLen: null,
+        enumList: ['0', '1', '2'],
         children: null,
       },
     },
@@ -93,51 +130,7 @@ export const RulesInsight: RulesType = {
               enumList: null,
             },
           },
-          views: {
-            description: 'Number of views',
-            validations: {
-              type: 'number',
-              required: false,
-              format: null,
-              charLen: null,
-              enumList: null,
-            },
-          },
-          comments: {
-            description: 'Number of comments',
-            validations: {
-              type: 'number',
-              required: false,
-              format: null,
-              charLen: null,
-              enumList: null,
-            },
-          },
         },
-      },
-    },
-  },
-  core: {
-    [RuleKeys.CanEdit]: {
-      name: 'CAN_EDIT',
-      description:
-        'Insight can be edited only within 1 hour of creation to prevent abuse of historical content.',
-      condition: {
-        field: 'createdAt',
-        operator: 'lessThan',
-        args: ['createdAt', 60], // createdAt < 60 minutes
-        expected: true,
-      },
-    },
-    [RuleKeys.CanAdd]: {
-      name: 'CAN_ADD',
-      description:
-        'Comments on a insights can only be added after 1 minute after insight has been created to prevent rushed/spammy replies.',
-      condition: {
-        field: 'createdAt',
-        operator: 'greaterThan',
-        args: ['createdAt', 2], // createdAt > 2 minutes
-        expected: true,
       },
     },
   },

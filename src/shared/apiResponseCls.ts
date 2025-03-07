@@ -39,7 +39,7 @@ export class AppError {
     this.stack = stack ?? ''
   }
 
-  static strigifyAppError(
+  static genErrorStr(
     status: number,
     cause: Record<string, unknown> | string | null,
     stack?: string,

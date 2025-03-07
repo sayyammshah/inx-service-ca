@@ -3,7 +3,7 @@ import {
   CoreUserErrorMsg,
   Gender,
 } from 'core/common/constants.js'
-import { InsightDto, UserDto } from 'core/business/dto/entityDto.js'
+import { InsightDto, ThreadsDto, UserDto } from 'core/business/dto/entityDto.js'
 import { AppError } from 'shared/apiResponseCls.js'
 import { fileURLToPath } from 'node:url'
 
@@ -45,6 +45,39 @@ export const generateInsightDto = (payload: unknown): InsightDto => {
     title: title as string,
     content: content as string,
     tags: tags ? (tags as Array<string>) : [],
+    stats: stats ? (stats as Record<string, number>) : null,
+  }
+}
+
+export const generateThreadsDto = (payload: unknown): ThreadsDto => {
+  if (typeof payload !== 'object' || payload === null)
+    throw new AppError(
+      AppResStatusCodes.BAD_REQUEST,
+      CoreUserErrorMsg.INVALID_PARAMS,
+      `${fileURLToPath(import.meta.url)} ${generateThreadsDto.name}`,
+    )
+
+  const {
+    insightId,
+    authorId,
+    content,
+    depth,
+    path,
+    parentThread,
+    threadId,
+    rootThread,
+    stats,
+  } = payload as Record<string, unknown>
+
+  return {
+    insightId: insightId as string,
+    authorId: authorId as string,
+    content: content as string,
+    depth: depth as 0 | 1 | 2,
+    path: path as string,
+    threadId: threadId as string,
+    parentThread: parentThread ? (parentThread as string) : null,
+    rootThread: rootThread ? (rootThread as string) : null,
     stats: stats ? (stats as Record<string, number>) : null,
   }
 }

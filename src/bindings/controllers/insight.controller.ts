@@ -1,7 +1,7 @@
 import { InsightErrorMessage } from '@bindings/common/constants.js'
 import { ControllerResponse, RequestContext } from '@bindings/common/types.js'
 import { InsightDataAdapter } from '@bindings/mongo-database'
-import { CreateInsightPost, FetchInsightsPosts } from '@core/app'
+import { CreateNewInsight, FetchInsightsPosts } from '@core/app'
 import { generateInsightDto, InsightDto } from '@core/business'
 import { CoreAppResponse } from '@core/common/coreAppResponse.js'
 import { fileURLToPath } from 'node:url'
@@ -30,7 +30,7 @@ export const CreateInsight = async (
   let response: ControllerResponse | null = null
 
   if (Object.keys(body).length === 0) {
-    const appError = AppError.strigifyAppError(
+    const appError = new AppError(
       ResponseStatusCodes.BAD_REQUEST,
       InsightErrorMessage.INVALID_PARAMS,
       `${fileURLToPath(import.meta.url)} ${CreateInsight.name}`,
@@ -41,7 +41,7 @@ export const CreateInsight = async (
   // Call core module
   logger.info(requestContext, `preparing payload DTO`)
   const payload: InsightDto = generateInsightDto(body)
-  const result: CoreAppResponse = await CreateInsightPost(
+  const result: CoreAppResponse = await CreateNewInsight(
     {
       InsightDataAdapter: new InsightDataAdapter(),
     },
@@ -49,7 +49,7 @@ export const CreateInsight = async (
   )
 
   if (result.status !== ResponseStatusCodes.CREATED) {
-    const errMsg = AppError.strigifyAppError(
+    const errMsg = new AppError(
       result.status ?? ResponseStatusCodes.INTERNAL_SERVER_ERROR,
       `${InsightErrorMessage.FAILED_TO_CREATE_INSIGHT}${result.message}`,
       `${fileURLToPath(import.meta.url)} ${CreateInsight.name}`,
@@ -83,7 +83,7 @@ export const FetchInsights = async (
   )
 
   if (result.status !== ResponseStatusCodes.OK) {
-    const errMsg = AppError.strigifyAppError(
+    const errMsg = new AppError(
       result.status ?? ResponseStatusCodes.INTERNAL_SERVER_ERROR,
       `${InsightErrorMessage.NO_RECORDS}${result.message}`,
       `${fileURLToPath(import.meta.url)} ${FetchInsights.name}`,

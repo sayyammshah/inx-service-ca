@@ -8,7 +8,7 @@ import { CoreAppError, CoreAppResponse } from '@core/common/coreAppResponse.js'
 import { InsightAdapters } from '@core/common/types.js'
 import { generateId } from '@core/common/utils.js'
 
-export const CreateInsightPost = async (
+export const CreateNewInsight = async (
   adapters: InsightAdapters,
   payload: InsightDto,
 ): Promise<CoreAppResponse> => {

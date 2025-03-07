@@ -70,3 +70,8 @@ export const AppResStatusCodes = {
 }
 
 export const UserAuthFields = ['email', 'password']
+
+export enum RuleKeys {
+  CanEdit = 'CAN_EDIT',
+  CanAdd = 'CAN_ADD',
+}

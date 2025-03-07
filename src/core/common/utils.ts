@@ -1,3 +1,4 @@
+import { ThreadsDto } from '@core/business'
 import {
   CoreUserErrorMsg,
   HASH,
@@ -60,3 +61,16 @@ export const Operations = (): {
   greaterThan: (args) => args[0] > args[1],
   lessThan: (args) => args[0] < args[1],
 })
+
+export const generateThreadPath = (payload: Partial<ThreadsDto>): string => {
+  // rootThreadId/parentThreadId/threadId
+  let threadPath = ''
+
+  const { rootThread, parentThread, threadId } = payload
+
+  if (rootThread) threadPath = `${rootThread}/`
+  if (parentThread) threadPath += `${parentThread}/`
+  threadPath += !threadPath ? `/${threadId}` : threadId
+
+  return threadPath
+}

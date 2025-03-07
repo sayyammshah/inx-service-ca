@@ -2,6 +2,7 @@ import {
   InsightDataInterface,
   UserDataInterface,
 } from '@core/storage-interface'
+import { RuleKeys } from './constants.ts'
 
 export type validationResult = {
   isValid: boolean
@@ -30,7 +31,7 @@ export type RulesType = {
         format: RegExp | string | null
         charLen: string | null // add chararacter length '-' seperated
         arrLen: number | null // applicable only if array
-        enumList: Record<string, unknown> | null
+        enumList: Array<unknown> | Record<string, unknown> | null
         children: {
           [key: string]: {
             description: string
@@ -41,7 +42,7 @@ export type RulesType = {
     }
   }
   core?: {
-    [key: string]: {
+    [key in RuleKeys]: {
       name: string
       description: string
       condition: {
@@ -66,6 +67,9 @@ export type UserAdapters = {
 }
 export type InsightAdapters = {
   InsightDataAdapter: InsightDataInterface
+}
+export type ThreadAdapters = {
+  ThreadDataAdapter: ThreadDataInterface
 }
 
 // Shared

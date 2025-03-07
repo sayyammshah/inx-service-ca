@@ -1,6 +1,7 @@
 export enum COLLECTION_NAMES {
   USER = 'InxUsers',
   INSIGHTS = 'InxInsights',
+  THREADS = 'inxThreads',
 }
 
 // Token Constants
@@ -18,6 +19,7 @@ export enum CommonErrorMsg {
   INVALID_PARAMS = 'Invalid Params',
   INVALID_TOKEN = 'Invalid Token',
   UNAUTHORIZED = 'Unauthorised',
+  NO_RECORDS = 'No records found: ',
 }
 
 export enum UserErrorMsg {
@@ -31,5 +33,11 @@ export enum UserErrorMsg {
 export enum InsightErrorMessage {
   INVALID_PARAMS = CommonErrorMsg.INVALID_PARAMS,
   FAILED_TO_CREATE_INSIGHT = 'Failed to create Insight: ',
-  NO_RECORDS = 'No records found: ',
+  NO_RECORDS = CommonErrorMsg.NO_RECORDS,
+}
+
+export enum ThreadsErrorMessage {
+  INVALID_PARAMS = CommonErrorMsg.INVALID_PARAMS,
+  NO_RECORDS = CommonErrorMsg.NO_RECORDS,
+  FAILED_TO_CREATE_THREAD = 'Failed to create Thread: ',
 }

@@ -62,4 +62,6 @@ export class Threads {
       message: message,
     }
   }
+
+  // Write a function to verify the depth(comment/reply) of provided payload is correct or not
 }

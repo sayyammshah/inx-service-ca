@@ -32,7 +32,7 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - name: Install Dependencies
+      - name: Run Lint
         run: pnpm run lint
 
       - name: CI Completed

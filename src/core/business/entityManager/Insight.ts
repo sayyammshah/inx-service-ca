@@ -2,7 +2,7 @@ import { validationResult } from '@core/common/types.js'
 import { InsightDto } from '../dto/entityDto.js'
 import { RulesInsight } from '../rulesEngine/Insight.core.js'
 import { entityValidator } from '@core/common/validations.js'
-import { BusinessRulesMsgs, RuleKeys } from '@core/common/constants.js'
+import { BusinessRulesMsgs, RuleKeysInsights } from '@core/common/constants.js'
 import { convertDate, Operations } from '@core/common/utils.js'
 
 export class Insights {
@@ -95,12 +95,10 @@ export class Insights {
         canEdit: false,
         message: 'Something went wrong',
       }
-    const { condition } = RulesInsight.core[RuleKeys.CanAdd]
+    const { condition } = RulesInsight.core[RuleKeysInsights.CanAdd]
     const validateCondition = Operations()[condition.operator]
-    const updatedArgs = condition.args.map((arg: unknown) => {
-      return typeof arg === 'string'
-        ? convertDate(insight[arg as keyof InsightDto] as number)
-        : arg
+    const updatedArgs = condition.args.map((arg: InsightDto) => {
+      return typeof arg === 'string' ? convertDate(insight[arg] as number) : arg
     })
     canEditPost = validateCondition(updatedArgs) === condition.expected
 
@@ -127,13 +125,13 @@ export class Insights {
         canAdd: false,
         message: 'Something went wrong',
       }
-    const { condition } = RulesInsight.core[RuleKeys.CanAdd]
+    const { condition } = RulesInsight.core[RuleKeysInsights.CanAdd]
     const validateCondition = Operations()[condition.operator]
-    const updatedArgs = condition.args.map((arg: unknown) => {
-      return typeof arg === 'string'
+    const updatedArgs = condition.args.map((arg: unknown) =>
+      typeof arg === 'string'
         ? convertDate(insight[arg as keyof InsightDto] as number)
-        : arg
-    })
+        : arg,
+    )
     canAddComment = validateCondition(updatedArgs) === condition.expected
 
     return {

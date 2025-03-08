@@ -28,3 +28,24 @@
 4. Setup CI/CD
 5. Accept Form data for user and insights instead of application/json
 6. Implement validations for replies and comment when its nested or top level
+
+---
+
+Fetch Scenarios
+
+1. FetchBy AuthorId | FetchAll -> {
+   - Post Details
+   - Stats
+   - UIDs
+     } -> Operation read()
+2. FetchBy insight -> {
+   - Post Details
+   - Comments & Replies
+   - User Data?
+     } -> Operation aggregate()
+     --
+3. FetchBy Tags (Personal Recommendation) -> {
+   - Post Details
+   - Stats
+   - UIDs
+     } -> Operation aggregate()

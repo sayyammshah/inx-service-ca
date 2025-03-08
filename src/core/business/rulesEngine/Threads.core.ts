@@ -1,4 +1,4 @@
-import { ID_PATTERN } from '@core/common/constants.js'
+import { ID_PATTERN, RuleKeysThreads } from '@core/common/constants.js'
 import { RulesType } from '@core/common/types.js'
 
 export const RulesThread: RulesType = {
@@ -131,6 +131,41 @@ export const RulesThread: RulesType = {
             },
           },
         },
+      },
+    },
+  },
+  core: {
+    [RuleKeysThreads.ValidateHierarchy]: {
+      name: 'VALIDATE_HIERARCHY',
+      description:
+        "'parentThread' and 'rootThread' cannot be null when depth is 1 or 2",
+      condition: {
+        field: 'depth',
+        operator: 'equals',
+        args: ['depth', 0],
+        expected: false,
+        dependencies: [
+          {
+            field: 'parentThread',
+            operator: 'notEqualsTo',
+            args: ['parentThread', null],
+          },
+          {
+            field: 'rootThread',
+            operator: 'notEqualsTo',
+            args: ['rootThread', null],
+          },
+        ],
+      },
+    },
+    [RuleKeysThreads.MaxChildThreads]: {
+      name: 'MAX_CHILD_THREADS',
+      description: 'Maximum 2 nested replies per root thread',
+      condition: {
+        field: 'depth',
+        operator: 'lessThanEqualsTo',
+        args: ['depth', 3],
+        expected: true,
       },
     },
   },

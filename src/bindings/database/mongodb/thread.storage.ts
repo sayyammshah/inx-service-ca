@@ -1,12 +1,12 @@
 import { Db } from 'mongodb'
 import { ThreadDataInterface } from '@core/storage-interface'
 import { MongoDBClient } from '@infra/clients'
-import { COLLECTION_NAMES } from '@bindings/common/constants.js'
+import { DATABASE_CONSTANTS } from '@bindings/common/constants.js'
 import { logger } from 'shared/logger.js'
 import { Threads } from '@core/business'
 
 export class ThreadDataAdapter implements ThreadDataInterface {
-  private collectionName = COLLECTION_NAMES.THREADS
+  private collectionName = DATABASE_CONSTANTS.COLLECTIONS.THREADS
   private client: Db | null = null
 
   private async getClient(): Promise<Db> {

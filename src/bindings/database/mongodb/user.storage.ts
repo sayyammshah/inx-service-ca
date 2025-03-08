@@ -2,11 +2,11 @@ import { Db, FindCursor, WithId } from 'mongodb'
 import { User } from '@core/business'
 import { UserDataInterface } from '@core/storage-interface'
 import { MongoDBClient } from '@infra/clients'
-import { COLLECTION_NAMES } from '@bindings/common/constants.js'
+import { DATABASE_CONSTANTS } from '@bindings/common/constants.js'
 import { logger } from 'shared/logger.js'
 
 export class UserDataAdapter implements UserDataInterface {
-  private collectionName = COLLECTION_NAMES.USER
+  private collectionName = DATABASE_CONSTANTS.COLLECTIONS.USER
   private client: Db | null = null
 
   private async getClient(): Promise<Db> {

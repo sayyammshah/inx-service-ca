@@ -56,7 +56,7 @@ export const CreateNewInsight = async (
  * @param options.projection - A projection object to specify which fields to include or exclude.
  * @returns A promise that resolves to a CoreAppResponse object containing the fetched insights.
  */
-export const FetchInsightsPosts = async (
+export const FetchInsightPost = async (
   adapters: InsightAdapters,
   queryParams?: Record<string, string> | undefined,
   options?: {
@@ -70,7 +70,8 @@ export const FetchInsightsPosts = async (
   let filter = {}
   if (queryParams) filter = queryParams
 
-  const insightsData = await InsightDataAdapter.read(filter, projection)
+  const insightsData = await InsightDataAdapter.aggregate(filter, projection)
+  // const insightsData = await InsightDataAdapter.read(filter, projection)
 
   if (Array.isArray(insightsData) && insightsData.length == 0) {
     response.status = AppResStatusCodes.OK

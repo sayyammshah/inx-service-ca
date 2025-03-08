@@ -1,12 +1,12 @@
-import { Db, FindCursor, WithId } from 'mongodb'
-import { Insights } from '@core/business'
+import { Db, Document, FindCursor, WithId } from 'mongodb'
+import { InsightDto, Insights } from '@core/business'
 import { InsightDataInterface } from '@core/storage-interface'
 import { MongoDBClient } from '@infra/clients'
-import { COLLECTION_NAMES } from '@bindings/common/constants.js'
+import { DATABASE_CONSTANTS } from '@bindings/common/constants.js'
 import { logger } from 'shared/logger.js'
 
 export class InsightDataAdapter implements InsightDataInterface {
-  private collectionName = COLLECTION_NAMES.INSIGHTS
+  private collectionName = DATABASE_CONSTANTS.COLLECTIONS.INSIGHTS
   private client: Db | null = null
 
   private async getClient(): Promise<Db> {
@@ -46,6 +46,41 @@ export class InsightDataAdapter implements InsightDataInterface {
         })
         .toArray()
 
+      return response
+    } catch (error) {
+      const errorMessage = `Error fetching insights: ${error instanceof Error ? `${error.message}` : `${error}`}`
+      logger.error(errorMessage)
+      throw new Error(errorMessage)
+    }
+  }
+
+  async aggregate(
+    filter?: Partial<InsightDto>,
+    projection?: Record<string, number>,
+  ): Promise<unknown> {
+    try {
+      if (!this.client) this.client = await this.getClient()
+
+      const pipeline: Document[] = [
+        {
+          $match: filter,
+        },
+        {
+          $lookup: {
+            from: DATABASE_CONSTANTS.COLLECTIONS.THREADS,
+            localField: 'insightId',
+            foreignField: 'insightId',
+            as: 'threads',
+          },
+        },
+        {
+          $project: projection,
+        },
+      ]
+      const response = await this.client
+        .collection(this.collectionName)
+        .aggregate(pipeline)
+        .toArray()
       return response
     } catch (error) {
       const errorMessage = `Error fetching user: ${error instanceof Error ? `${error.message}` : `${error}`}`

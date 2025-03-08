@@ -60,6 +60,9 @@ export const Operations = (): {
 } => ({
   greaterThan: (args) => args[0] > args[1],
   lessThan: (args) => args[0] < args[1],
+  lessThanEqualsTo: (args) => args[0] <= args[1],
+  equals: (args) => args[0] == args[1],
+  notEqualsTo: (args) => args[0] != args[1],
 })
 
 export const generateThreadPath = (payload: Partial<ThreadsDto>): string => {

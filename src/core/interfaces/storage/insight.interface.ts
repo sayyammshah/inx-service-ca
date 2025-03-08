@@ -6,7 +6,10 @@ export interface InsightDataInterface {
     filter?: Partial<InsightDto>,
     projection?: Record<string, number>,
   ): Promise<unknown>
+  aggregate(
+    filter?: Partial<InsightDto>,
+    projection?: Record<string, number>,
+  ): Promise<unknown>
   // update(): Promise<unknown>
   // delete(): Promise<unknown>
-  // aggregate(): Promise<unknown>
 }

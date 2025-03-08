@@ -49,6 +49,10 @@ export enum BusinessRulesMsgs {
   CAN_ADD = 'You can add comments 1 minute after the insight has been created.',
 }
 
+export enum ThreadRulesMsgs {
+  FieldHierarchy = " cannot be null when 'depth' has non-zero value.",
+}
+
 // Hash Constants
 export const HASH = {
   ALGORITHM: 'sha512',
@@ -71,7 +75,12 @@ export const AppResStatusCodes = {
 
 export const UserAuthFields = ['email', 'password']
 
-export enum RuleKeys {
+export enum RuleKeysInsights {
   CanEdit = 'CAN_EDIT',
   CanAdd = 'CAN_ADD',
+}
+
+export enum RuleKeysThreads {
+  ValidateHierarchy = 'VALIDATE_HIERARCHY',
+  MaxChildThreads = 'MAX_CHILD_THREADS',
 }

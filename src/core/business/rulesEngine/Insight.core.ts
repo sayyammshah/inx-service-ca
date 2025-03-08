@@ -1,4 +1,4 @@
-import { ID_PATTERN, RuleKeys } from '@core/common/constants.js'
+import { ID_PATTERN, RuleKeysInsights } from '@core/common/constants.js'
 import { RulesType } from '@core/common/types.js'
 
 export const RulesInsight: RulesType = {
@@ -118,7 +118,7 @@ export const RulesInsight: RulesType = {
     },
   },
   core: {
-    [RuleKeys.CanEdit]: {
+    [RuleKeysInsights.CanEdit]: {
       name: 'CAN_EDIT',
       description:
         'Insight can be edited only within 1 hour of creation to prevent abuse of historical content.',
@@ -129,7 +129,7 @@ export const RulesInsight: RulesType = {
         expected: true,
       },
     },
-    [RuleKeys.CanAdd]: {
+    [RuleKeysInsights.CanAdd]: {
       name: 'CAN_ADD',
       description:
         'Comments on a insights can only be added after 1 minute after insight has been created to prevent rushed/spammy replies.',

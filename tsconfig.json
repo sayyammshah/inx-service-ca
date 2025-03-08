@@ -27,6 +27,7 @@
       "@bindings/logger": ["bindings/logger/index.js"],
       "@bindings/express-routes": ["bindings/routes/express/index.js"],
       "@bindings/controllers": ["bindings/controllers/index.js"],
+      "@bindings/middleware": ["bindings/middleware/index.js"],
       "@bindings/common/*": ["bindings/common/*"],
 
       // Infrastructure Module Alias

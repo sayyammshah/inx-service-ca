@@ -1,11 +1,18 @@
-import { AppLoggerInterface } from '@bindings/logger-interface'
-import { AppResStatusCodes } from '@core/common/constants.ts'
-import { UserDataInterface } from '@core/storage-interface'
+import {
+  InsightDataInterface,
+  UserDataInterface,
+} from '@core/storage-interface'
+import { RuleKeys } from './constants.ts'
 
 export type validationResult = {
   isValid: boolean
   message: string
 }
+
+export type ChildValidations = Omit<
+  RulesType['fields'][string]['validations'],
+  'arrLen' | 'children'
+>
 
 export type RulesType = {
   fields: {
@@ -22,19 +29,29 @@ export type RulesType = {
           | 'enum'
         required: boolean
         format: RegExp | string | null
-        minLen: number | null
-        maxLen: number | null
-        enumList: Record<string, unknown> | null
+        charLen: string | null // add chararacter length '-' seperated
+        arrLen: number | null // applicable only if array
+        enumList: Array<unknown> | Record<string, unknown> | null
+        children: {
+          [key: string]: {
+            description: string
+            validations: ChildValidations
+          }
+        } | null
       }
     }
   }
-  handlers: {
-    getValidations: <T>(
-      key: string,
-      value: T,
-      isAuth: boolean,
-    ) => (() => string)[]
-    excValidations?: (<T>(key: string, value: T) => string)[]
+  core?: {
+    [key in RuleKeys]: {
+      name: string
+      description: string
+      condition: {
+        field: string
+        operator: string
+        args: Record<string, unkown>
+        expected: unknown
+      }
+    }
   }
 }
 
@@ -44,18 +61,18 @@ export type GenSecretsReturnRes = {
   payload: unknown
 }
 
+// Adapters
 export type UserAdapters = {
   UserDataAdapter: UserDataInterface
-  LoggerAdapter: AppLoggerInterface
+}
+export type InsightAdapters = {
+  InsightDataAdapter: InsightDataInterface
+}
+export type ThreadAdapters = {
+  ThreadDataAdapter: ThreadDataInterface
 }
 
 // Shared
-export interface CoreAppResponse {
-  status: AppResStatusCodes
-  uid: string
-  queryResponse: unknown | null
-  message: string
-}
 export interface CoreRequestContext {
   method: RequestMethods
   requestId: string // Unique identifier for tracking the request within this service

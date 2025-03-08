@@ -1,24 +1,19 @@
-import { Gender } from '@core/common/constants.js'
+import { Gender, ID_PATTERN } from '@core/common/constants.js'
 import { RulesType } from '@core/common/types.js'
-import {
-  enumValidation,
-  formatValidation,
-  lengthValidation,
-  mandatoryFieldValidation,
-  typeValidation,
-} from 'core/common/validations.js'
 
 export const Rules: RulesType = {
   fields: {
     userId: {
+      //  Not considered for validation
       description: "Hex ID that uniquely identifies the user's document",
       validations: {
         type: 'string',
         required: true,
-        format: /^[0-9a-fA-F]{16}$/,
-        minLen: 16,
-        maxLen: 16,
+        format: ID_PATTERN.genIdRegex(),
+        charLen: '31-31',
+        arrLen: null,
         enumList: null,
+        children: null,
       },
     },
     name: {
@@ -27,9 +22,10 @@ export const Rules: RulesType = {
         type: 'string',
         required: true,
         format: /^[A-Za-z]+ [A-Za-z]+$/,
-        minLen: 2,
-        maxLen: 50,
+        charLen: '2-50',
+        arrLen: null,
         enumList: null,
+        children: null,
       },
     },
     email: {
@@ -39,9 +35,10 @@ export const Rules: RulesType = {
         required: true,
         format:
           /^[a-zA-Z0-9]+(?:[.-][a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:[.-][a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$/,
-        minLen: 2,
-        maxLen: 50,
+        charLen: '2-50',
+        arrLen: null,
         enumList: null,
+        children: null,
       },
     },
     password: {
@@ -51,9 +48,10 @@ export const Rules: RulesType = {
         required: true,
         format:
           /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/,
-        minLen: 2,
-        maxLen: 50,
+        charLen: '2-16',
+        arrLen: null,
         enumList: null,
+        children: null,
       },
     },
     dob: {
@@ -62,9 +60,10 @@ export const Rules: RulesType = {
         type: 'number',
         required: false,
         format: null,
-        minLen: null,
-        maxLen: null,
+        charLen: null,
+        arrLen: null,
         enumList: null,
+        children: null,
       },
     },
     gender: {
@@ -73,9 +72,10 @@ export const Rules: RulesType = {
         type: 'string',
         required: false,
         format: 'Gender',
-        minLen: null,
-        maxLen: null,
+        charLen: null,
+        arrLen: null,
         enumList: Gender,
+        children: null,
       },
     },
     profilePicture: {
@@ -84,23 +84,11 @@ export const Rules: RulesType = {
         type: 'string',
         required: false,
         format: 'Base64',
-        minLen: null,
-        maxLen: null,
+        charLen: null,
+        arrLen: null,
         enumList: null,
+        children: null,
       },
-    },
-  },
-  handlers: {
-    getValidations: <T>(key: string, value: T): (() => string)[] => {
-      const { required, type, format, minLen, maxLen, enumList } =
-        Rules.fields[key].validations
-      return [
-        () => mandatoryFieldValidation<typeof value>(value, required),
-        () => typeValidation<typeof value>(value, type),
-        () => lengthValidation(value as string, minLen, maxLen),
-        () => formatValidation(value as string, format),
-        () => enumValidation<typeof value>(value, enumList),
-      ]
     },
   },
 }

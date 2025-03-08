@@ -1,6 +1,10 @@
 import express, { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
-import { userRouter } from '@bindings/express-routes'
+import {
+  UserRouter,
+  InsightRouter,
+  ThreadRouter,
+} from '@bindings/express-routes'
 import { MongoDBClient } from '@infra/clients'
 import { httpLogger, logger } from 'shared/logger.js'
 import { ApiResponse, AppError } from 'shared/apiResponseCls.js'
@@ -37,7 +41,9 @@ app.get('/health-check', (req, res) => {
   })
 })
 
-app.use('/v1/api/user', userRouter)
+app.use('/v1/api/user', UserRouter)
+app.use('/v1/api/inx', InsightRouter)
+app.use('/v1/api/thread', ThreadRouter)
 
 // ------------------------ Routes ------------------------
 
@@ -45,20 +51,11 @@ app.use('/v1/api/user', userRouter)
 app.use(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (err: Error | AppError, req: Request, res: Response, next: NextFunction) => {
-    const errObject = {
-      status: err instanceof AppError ? err.status : 500,
-      stack: err.stack ?? '',
-      cause:
-        err instanceof AppError
-          ? err.cause
-          : err instanceof Error
-            ? err.message
-            : (err ?? 'Something went wrong'),
-    }
+    const errObject = AppError.generateGlobalErrorObject(err)
     res.status(errObject.status).json(
       new ApiResponse(errObject.status, null, {
         cause: errObject.cause,
-        stack: errObject.stack,
+        stack: errObject.stack ?? '',
       }),
     )
   },

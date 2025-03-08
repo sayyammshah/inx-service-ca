@@ -1,11 +1,12 @@
 import { User, UserDto } from '@core/business'
 import { generateId, hashManager } from '@core/common/utils.js'
-import { UserAdapters, CoreAppResponse } from '@core/common/types.js'
+import { UserAdapters } from '@core/common/types.js'
 import {
   AppResStatusCodes,
   CoreUserErrorMsg,
   MODULE_NAME,
 } from '@core/common/constants.js'
+import { CoreAppError, CoreAppResponse } from '@core/common/coreAppResponse.js'
 
 /**
  * Creates a new user account in the system.
@@ -24,41 +25,28 @@ export const CreateUserAccount = async (
   adapters: UserAdapters,
   payload: UserDto,
 ): Promise<CoreAppResponse> => {
-  const { UserDataAdapter, LoggerAdapter: logger } = adapters
-
-  logger.info(
-    `${MODULE_NAME}: ${CreateUserAccount.name} called payload validation initiated`,
-  )
+  const { UserDataAdapter } = adapters
+  const response = new CoreAppResponse()
 
   const { isValid, message } = User.validate(payload)
-  if (!isValid) {
-    const errMsg = `Invalid User Object Provided: ${message}`
-    logger.error(errMsg)
-    throw new Error(errMsg)
-  }
+  if (!isValid)
+    throw new CoreAppError(
+      AppResStatusCodes.BAD_REQUEST,
+      `${MODULE_NAME}: Invalid User Object Provided: ${message}`,
+    )
 
-  logger.info(
-    `${MODULE_NAME}: Payload validation completed successfully, Validating if user already exists`,
-  )
   const filter = {
     email: payload.email,
   }
-  const response: CoreAppResponse = {
-    uid: '',
-    queryResponse: null,
-    message: '',
-    status: AppResStatusCodes.CREATED,
-  }
+
   const userAlreadyExists = await UserDataAdapter.read(filter)
 
   if (Array.isArray(userAlreadyExists) && userAlreadyExists.length > 0) {
-    response.status = AppResStatusCodes.BAD_REQUEST
+    response.status = AppResStatusCodes.CONFLICT
     response.message = CoreUserErrorMsg.USER_EXISTS
-    logger.error(`${MODULE_NAME}: ${response.message}`)
     return response
   }
 
-  logger.info(`${MODULE_NAME}: Preparing payload for user registration`)
   const userId: string = generateId()
   const hashedPassword: string = hashManager().generate(payload.password)
 
@@ -70,8 +58,7 @@ export const CreateUserAccount = async (
 
   response.uid = userId
   response.queryResponse = await UserDataAdapter.create(newUser)
-
-  logger.info(`${MODULE_NAME}: Core User registration successfull`)
+  response.status = AppResStatusCodes.CREATED
 
   return response
 }
@@ -83,32 +70,20 @@ export const AuthenticateUserAccount = async (
     projection: Record<string, number>
   },
 ): Promise<CoreAppResponse> => {
-  const { UserDataAdapter, LoggerAdapter: logger } = adapters
-
-  logger.info(
-    `${MODULE_NAME}: ${CreateUserAccount.name} called payload validation initiated`,
-  )
+  const { UserDataAdapter } = adapters
+  const response = new CoreAppResponse()
 
   const { isValid, message } = User.validate(payload, true)
-  if (!isValid) {
-    const errMSg = `${MODULE_NAME}: Invalid User Object Provided: ${message}`
-    logger.error(errMSg)
-    throw new Error(errMSg)
-  }
+  if (!isValid)
+    throw new CoreAppError(
+      AppResStatusCodes.BAD_REQUEST,
+      `${MODULE_NAME}: Invalid User Object Provided: ${message}`,
+    )
 
-  logger.info(
-    `${MODULE_NAME}: Payload validation completed successfully, Validating if user already exists`,
-  )
   const { projection = {} } = options || {}
 
   const filter = {
     email: payload.email,
-  }
-  const response: CoreAppResponse = {
-    uid: '',
-    queryResponse: null,
-    message: '',
-    status: AppResStatusCodes.OK,
   }
 
   const userData = await UserDataAdapter.read(filter, projection)
@@ -116,26 +91,22 @@ export const AuthenticateUserAccount = async (
   if (Array.isArray(userData) && userData.length == 0) {
     response.status = AppResStatusCodes.NOT_FOUND
     response.message = CoreUserErrorMsg.USER_NOT_FOUND
-    logger.error(`${MODULE_NAME}: ${response.message}`)
     return response
   }
 
   const { password, userId } = Array.isArray(userData) ? userData[0] : {}
 
-  const { isValid: tokenIsValid, message: tokenValidationMessage } =
+  const { isValid: passwordIsValid, message: tokenValidationMessage } =
     hashManager().verify(password, payload.password)
 
-  if (!tokenIsValid) {
+  if (!passwordIsValid) {
     response.status = AppResStatusCodes.BAD_REQUEST
     response.message = tokenValidationMessage
-    logger.error(`${MODULE_NAME}: ${response.message}`)
     return response
   }
 
   response.uid = userId
   response.queryResponse = userData
-
-  logger.info(`${MODULE_NAME}: Core User authentication successfull`)
 
   return response
 }

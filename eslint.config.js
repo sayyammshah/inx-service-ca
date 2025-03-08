@@ -34,7 +34,7 @@ export default [
     rules: {
       'no-console': 'warn',
       'prettier/prettier': 'error',
-      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': 'error',
     },
   },
 ]

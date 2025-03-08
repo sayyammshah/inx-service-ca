@@ -1,5 +1,6 @@
 import { UserAuthFields } from '@core/common/constants.js'
 import { validationResult } from '@core/common/types.js'
+import { entityValidator } from '@core/common/validations.js'
 import { UserDto } from 'core/business/dto/entityDto.js'
 import { Rules } from 'core/business/rulesEngine/User.core.js'
 
@@ -47,20 +48,18 @@ export class User {
   static validate(user: UserDto, isAuth: boolean = false): validationResult {
     let message = ''
 
-    const { getValidations } = Rules.handlers
-
     for (const field in user) {
+      if (isAuth && !UserAuthFields.includes(field)) continue
+
       const value = user[field as keyof UserDto]
-
-      if (!UserAuthFields.includes(field)) continue
-      const validations = getValidations<typeof value>(field, value, isAuth)
-
-      message =
-        validations.map((validate) => validate()).find((message) => message) ||
-        ''
-
-      if (message) {
-        message = `${field}: ${message}`
+      const validations = Rules.fields[field].validations
+      const { isValid, message: validationMsg } = entityValidator(
+        field,
+        value,
+        validations,
+      )
+      if (!isValid) {
+        message = validationMsg
         break
       }
     }

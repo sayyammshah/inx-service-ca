@@ -19,14 +19,25 @@ export const CreateNewThread = async (
       `${MODULE_NAME}: Invalid Thread Object Provided: ${message}`,
     )
 
-  // Create New Object
   const threadId = generateId()
   const path = generateThreadPath({ ...payload, threadId })
-  const newThread = new Threads({
+  const threadObj = {
     ...payload,
     threadId,
     path,
-  })
+  }
+
+  // Validate Hierarchy
+  const { isValid: hierarchyIsValid, message: hierarchyValidationMessage } =
+    Threads.validateHierarchy(threadObj)
+  if (!hierarchyIsValid)
+    throw new CoreAppError(
+      AppResStatusCodes.CONFLICT,
+      `${MODULE_NAME}: Invalid Thread Hierarchy: ${hierarchyValidationMessage}`,
+    )
+
+  // Create New Object
+  const newThread = new Threads(threadObj)
 
   // Store it in DB
   response.queryResponse = await ThreadDataAdapter.create(newThread)

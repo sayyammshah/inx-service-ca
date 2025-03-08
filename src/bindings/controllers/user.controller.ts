@@ -7,7 +7,7 @@ import { tokenManager } from '@bindings/common/utils.js'
 import { ResponseStatusCodes } from 'shared/constants.js'
 import { AppError } from 'shared/apiResponseCls.js'
 import { fileURLToPath } from 'node:url'
-import { USER_PROJECTIONS, UserErrorMsg } from '@bindings/common/constants.js'
+import { DATABASE_CONSTANTS, UserErrorMsg } from '@bindings/common/constants.js'
 import { CoreAppResponse } from '@core/common/coreAppResponse.js'
 
 /**
@@ -114,7 +114,7 @@ export async function AuthenticateUser(
       UserDataAdapter: new UserDataAdapter(),
     },
     payload,
-    { projection: USER_PROJECTIONS },
+    { projection: DATABASE_CONSTANTS.PROJECTIONS.USER },
   )
 
   if (result.status !== ResponseStatusCodes.OK) {

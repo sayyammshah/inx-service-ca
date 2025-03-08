@@ -1,7 +1,7 @@
 import { InsightErrorMessage } from '@bindings/common/constants.js'
 import { ControllerResponse, RequestContext } from '@bindings/common/types.js'
 import { InsightDataAdapter } from '@bindings/mongo-database'
-import { CreateNewInsight, FetchInsightsPosts } from '@core/app'
+import { CreateNewInsight, FetchInsightPost } from '@core/app'
 import { generateInsightDto, InsightDto } from '@core/business'
 import { CoreAppResponse } from '@core/common/coreAppResponse.js'
 import { fileURLToPath } from 'node:url'
@@ -74,7 +74,7 @@ export const FetchInsights = async (
   let response: ControllerResponse | null = null
 
   // Call core module
-  const result: CoreAppResponse = await FetchInsightsPosts(
+  const result: CoreAppResponse = await FetchInsightPost(
     {
       InsightDataAdapter: new InsightDataAdapter(),
     },

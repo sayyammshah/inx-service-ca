@@ -48,8 +48,13 @@ export type RulesType = {
       condition: {
         field: string
         operator: string
-        args: Record<string, unkown>
-        expected: unknown
+        args: Array<unkown>
+        expected: boolean
+        dependencies?: Array<{
+          field: string
+          operator: string
+          args: Array<unkown>
+        }>
       }
     }
   }

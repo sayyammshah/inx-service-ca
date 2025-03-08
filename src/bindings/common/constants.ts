@@ -1,18 +1,7 @@
-export enum COLLECTION_NAMES {
-  USER = 'InxUsers',
-  INSIGHTS = 'InxInsights',
-  THREADS = 'inxThreads',
-}
-
 // Token Constants
 export const TOKEN = {
   ALGORITHM: 'sha256',
   DELIMETER: '.',
-}
-
-// Database Projections
-export const USER_PROJECTIONS = {
-  _id: 0,
 }
 
 export enum CommonErrorMsg {
@@ -40,4 +29,27 @@ export enum ThreadsErrorMessage {
   INVALID_PARAMS = CommonErrorMsg.INVALID_PARAMS,
   NO_RECORDS = CommonErrorMsg.NO_RECORDS,
   FAILED_TO_CREATE_THREAD = 'Failed to create Thread: ',
+}
+
+// Database Helpers
+enum CollectionNames {
+  USER = 'InxUsers',
+  INSIGHTS = 'InxInsights',
+  THREADS = 'inxThreads',
+}
+
+export const DATABASE_CONSTANTS = {
+  COLLECTIONS: CollectionNames,
+  PROJECTIONS: {
+    USER: {
+      _id: 0,
+    },
+  },
+  AGGR: {
+    THREADS_LOOKUP: {
+      LOCAL_FIELD: 'insightId',
+      FOREIGN_FIELD: 'insightId',
+      AS: 'threads',
+    },
+  },
 }

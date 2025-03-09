@@ -77,7 +77,6 @@ export const UserAuthFields = ['email', 'password']
 
 export enum RuleKeysInsights {
   CanEdit = 'CAN_EDIT',
-  CanAdd = 'CAN_ADD',
 }
 
 export enum RuleKeysThreads {

@@ -35,8 +35,7 @@
 
 ---
 
-Fetch Scenarios
--- 3. FetchBy Tags (Personal Recommendation) -> {
+Fetch Scenarios 3. FetchBy Tags (Personal Recommendation) -> {
 
 - Post Details
 - Stats

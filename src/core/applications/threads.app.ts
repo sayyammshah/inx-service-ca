@@ -27,14 +27,6 @@ export const CreateNewThread = async (
     path,
   }
 
-  // Validate nested reply max cout
-  const isExcedded = Threads.isMaxReplyCountExceeded(threadObj)
-  if (isExcedded)
-    throw new CoreAppError(
-      AppResStatusCodes.CONFLICT,
-      `${MODULE_NAME}: Thread Exceeded Max Reply Count`,
-    )
-
   // Validate Hierarchy
   const { isValid: hierarchyIsValid, message: hierarchyValidationMessage } =
     Threads.validateHierarchy(threadObj)

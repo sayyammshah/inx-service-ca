@@ -2,7 +2,7 @@ import { validationResult } from '@core/common/types.js'
 import { ThreadsDto } from '../dto/entityDto.js'
 import { RulesThread } from '../rulesEngine/Threads.core.js'
 import { entityValidator } from '@core/common/validations.js'
-import { RuleKeysThreads, ThreadRulesMsgs } from '@core/common/constants.js'
+import { MODULE_NAME, RuleKeysThreads } from '@core/common/constants.js'
 import { Operations } from '@core/common/utils.js'
 
 export class Threads {
@@ -41,6 +41,23 @@ export class Threads {
     this.createdAt = this.updatedAt = new Date().getTime()
   }
 
+  // Helper Functions
+  private static _execCondition(
+    condition: { operator: string; operands: Array<unknown> },
+    thread: ThreadsDto,
+  ): boolean {
+    let result = false
+    const { operator, operands } = condition
+
+    const args = operands.map((operand) =>
+      typeof operand === 'string'
+        ? thread[operand as keyof ThreadsDto]
+        : operand,
+    )
+    result = Operations()[operator](args)
+    return result
+  }
+
   static validate(thread: ThreadsDto): validationResult {
     let message = ''
 
@@ -71,57 +88,35 @@ export class Threads {
     if (!RulesThread.core)
       return {
         isValid: false,
-        message: 'Something went wrong',
+        message: `${MODULE_NAME}: core rules for threads are undefined`,
       }
 
-    const { condition } = RulesThread.core[RuleKeysThreads.ValidateHierarchy]
+    const { initialCase, cases } =
+      RulesThread.core[RuleKeysThreads.ValidateHierarchy]
 
-    const validateCondition = Operations()[condition.operator]
-    const updatedArgs = condition.args.map((arg: unknown) =>
-      typeof arg === 'string' ? thread[arg as keyof ThreadsDto] : arg,
-    )
-    const result = validateCondition(updatedArgs) === condition.expected
+    const executeCase = (currentCase: string | null) => {
+      if (!currentCase) return
 
-    if (!result)
-      return {
-        isValid: true,
-        message: '',
+      const { ifCondition, thenCondition, failureMessage, nextCase } =
+        cases[currentCase]
+
+      const result = Threads._execCondition(ifCondition, thread)
+      if (result && !thenCondition) return
+      if (result && thenCondition) {
+        message = Threads._execCondition(thenCondition, thread)
+          ? ''
+          : failureMessage
+        return
       }
-
-    if (!condition.dependencies)
-      return {
-        isValid: false,
-        message: 'Something went wrong',
-      }
-
-    for (const dependentField of condition.dependencies) {
-      const { field, operator, args } = dependentField
-      const dependentResult = Operations()[operator](
-        args.map((arg: unknown) =>
-          typeof arg === 'string' ? thread[arg as keyof ThreadsDto] : arg,
-        ),
-      )
-
-      if (!dependentResult) {
-        message = `'${field}'${ThreadRulesMsgs.FieldHierarchy}`
-        break
-      }
+      if (nextCase) return executeCase(nextCase)
+      message = failureMessage
+      return
     }
+    executeCase(initialCase)
 
     return {
       isValid: !message,
       message: message,
     }
-  }
-
-  static isMaxReplyCountExceeded(thread: ThreadsDto): boolean {
-    if (!RulesThread.core) return false
-
-    const { condition } = RulesThread.core[RuleKeysThreads.MaxChildThreads]
-    const validateCondition = Operations()[condition.operator]
-    const updatedArgs = condition.args.map((arg: unknown) =>
-      typeof arg === 'string' ? thread[arg as keyof ThreadsDto] : arg,
-    )
-    return validateCondition(updatedArgs) === condition.expected
   }
 }

@@ -49,3 +49,49 @@
 ### Stage 1 - in this stage just fetch based on users created
 
 ### Stage 2 - in this stage add mechanism of recommendation
+
+---
+
+### Threads (Comments & Replies)
+
+#### Raw
+
+_Mandatory Fields_ -> parentId, Depth & rootId
+
+Scenario 1
+A. New Thread added (Comment) - Attributes: - parentThread, rootThread = null - depth = 0 - threadID = randomUUID*Comment1 - path = /${threadId} - Payload: - *Mandatory* -> depth = 0 - parentThread, rootThread = null
+B. New Thread Added (1st Reply) - Attributes: - parentThread, rootThread = randomUUID_Comment1 - depth = 1 - threadId = randomUUID_Reply1 - path = ${rootThread}/${parentThread}/${threadId} - Payload: - \_Mandatory* -> depth = 1, parentThread = randomUUID_Comment1
+
+---
+
+A. Hierarchy Validations
+_Mandatory Payload_ -> depth, parentId, rootThread
+conditions: 1. depth = 0 - parentThread, rootThread = null 2. depth > 1 - parentThread, rootThread != null
+
+notes:
+
+- if parentId or rootId !== null in case of depth > 0
+
+---
+
+1. No RootId in Payload
+   -> fetch threads based on parentId
+   1.1 if Multiple documents?
+   -> sort by createdAt, Order by DESC
+   -> topMost item will be root thread
+   -> set this rootId to new payload
+   1.2 if single document?
+   -> set rootId to new payload
+
+---
+
+**Rules for Threads**
+
+1. Hierarchy Validation - Done
+2. Check for duplicate depths under same rootId, parentId or insightId
+3. Maximum Nested reply allowed as of now is just 2
+
+**Rules for Insights**
+
+1. User can Only edit post within 1 hour of its creation
+2. user can only add comments on it after 1 min of its creation

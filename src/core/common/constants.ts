@@ -71,7 +71,9 @@ export const AppResStatusCodes = {
 
 export const UserAuthFields = ['email', 'password']
 
-export enum RuleKeys {
+export enum RuleKeysInsights {
   CanEdit = 'CAN_EDIT',
-  CanAdd = 'CAN_ADD',
+}
+export enum RuleKeysThreads {
+  ValidateHierarchy = 'VALIDATE_HIERARCHY',
 }

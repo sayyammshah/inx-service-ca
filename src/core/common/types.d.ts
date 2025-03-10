@@ -45,16 +45,17 @@ export type RulesType = {
     [key in RuleKeys]: {
       name: string
       description: string
-      condition: {
-        field: string
-        operator: string
-        args: Array<unkown>
-        expected: boolean
-        dependencies?: Array<{
-          field: string
-          operator: string
-          args: Array<unkown>
-        }>
+      initialCase: string
+      cases: {
+        [key: string]: {
+          ifCondition: {
+            operator: string
+            operands: Array<unknown>
+          }
+          thenCondition: { operator: string; operands: Array<unknown> } | null
+          failureMessage: string
+          nextCase: string | null
+        }
       }
     }
   }

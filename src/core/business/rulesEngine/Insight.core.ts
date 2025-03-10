@@ -1,4 +1,4 @@
-import { ID_PATTERN, RuleKeys } from '@core/common/constants.js'
+import { ID_PATTERN, RuleKeysInsights } from '@core/common/constants.js'
 import { RulesType } from '@core/common/types.js'
 
 export const RulesInsight: RulesType = {
@@ -118,26 +118,22 @@ export const RulesInsight: RulesType = {
     },
   },
   core: {
-    [RuleKeys.CanEdit]: {
+    [RuleKeysInsights.CanEdit]: {
       name: 'CAN_EDIT',
       description:
-        'Insight can be edited only within 1 hour of creation to prevent abuse of historical content.',
-      condition: {
-        field: 'createdAt',
-        operator: 'lessThan',
-        args: ['createdAt', 60], // createdAt < 60 minutes
-        expected: true,
-      },
-    },
-    [RuleKeys.CanAdd]: {
-      name: 'CAN_ADD',
-      description:
-        'Comments on a insights can only be added after 1 minute after insight has been created to prevent rushed/spammy replies.',
-      condition: {
-        field: 'createdAt',
-        operator: 'greaterThan',
-        args: ['createdAt', 2], // createdAt > 2 minutes
-        expected: true,
+        'Author can only edit insight within one hour of its creation',
+      initialCase: 'createdAtIsLessThanOneHour',
+      cases: {
+        createdAtIsLessThanOneHour: {
+          ifCondition: {
+            operator: 'lessThan',
+            operands: ['createdAt', 60], // 60 minutes
+          },
+          thenCondition: null,
+          failureMessage:
+            "Author can only edit insight within one hour of it's creation",
+          nextCase: null,
+        },
       },
     },
   },

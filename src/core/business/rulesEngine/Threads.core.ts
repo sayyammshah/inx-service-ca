@@ -136,36 +136,36 @@ export const RulesThread: RulesType = {
   },
   core: {
     [RuleKeysThreads.ValidateHierarchy]: {
-      name: 'VALIDATE_HIERARCHY',
-      description:
-        "'parentThread' and 'rootThread' cannot be null when depth is 1 or 2",
-      condition: {
-        field: 'depth',
-        operator: 'equals',
-        args: ['depth', 0],
-        expected: false,
-        dependencies: [
-          {
-            field: 'parentThread',
-            operator: 'notEqualsTo',
-            args: ['parentThread', null],
+      name: 'Hierarchy Validations',
+      description: 'Validations for Thread Hierarchy',
+      initialCase: 'depthEqualsToZero',
+      cases: {
+        depthEqualsToZero: {
+          ifCondition: {
+            operator: 'equalsTo',
+            operands: ['depth', 0],
           },
-          {
-            field: 'rootThread',
-            operator: 'notEqualsTo',
-            args: ['rootThread', null],
+          thenCondition: {
+            operator: 'isUndefined',
+            operands: ['rootThread', 'parentThread'],
           },
-        ],
-      },
-    },
-    [RuleKeysThreads.MaxChildThreads]: {
-      name: 'MAX_CHILD_THREADS',
-      description: 'Maximum 2 nested replies per root thread',
-      condition: {
-        field: 'depth',
-        operator: 'lessThanEqualsTo',
-        args: ['depth', 3],
-        expected: true,
+          failureMessage:
+            "'parentThread' and 'rootThread' should be null when depth is equals to zero",
+          nextCase: 'depthGreaterThanZero',
+        },
+        depthGreaterThanZero: {
+          ifCondition: {
+            operator: 'greaterThan',
+            operands: ['depth', 0],
+          },
+          thenCondition: {
+            operator: 'isDefined',
+            operands: ['parentThread', 'rootThread'],
+          },
+          failureMessage:
+            "'parentThread' and 'rootThread' are mandatory when depth is greater than zero",
+          nextCase: null,
+        },
       },
     },
   },

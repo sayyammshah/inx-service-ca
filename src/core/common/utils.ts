@@ -61,8 +61,18 @@ export const Operations = (): {
   greaterThan: (args) => args[0] > args[1],
   lessThan: (args) => args[0] < args[1],
   lessThanEqualsTo: (args) => args[0] <= args[1],
-  equals: (args) => args[0] == args[1],
+  equalsTo: (args) => args[0] == args[1],
   notEqualsTo: (args) => args[0] != args[1],
+  isUndefined: (args) => args.every((arg) => arg === undefined || arg === null),
+  isDefined: (args) => args.every((arg) => arg),
+})
+
+export const Calculate = (): {
+  [key: string]: (args: number[]) => number
+} => ({
+  divide: (args) => args[0] / args[1],
+  convertDateInMinutes: (args) =>
+    Math.floor((Date.now() - args[0]) / TIME_CONVERSIONS.MINUTES),
 })
 
 export const generateThreadPath = (payload: Partial<ThreadsDto>): string => {

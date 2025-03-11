@@ -88,4 +88,26 @@ export class InsightDataAdapter implements InsightDataInterface {
       throw new Error(errorMessage)
     }
   }
+
+  async update(
+    filter: Record<keyof InsightDto, string>,
+    query: { [key: string]: Partial<InsightDto> },
+    options: Record<string, string> = {
+      returnDocument: 'after',
+    },
+  ): Promise<unknown> {
+    try {
+      if (!this.client) this.client = await this.getClient()
+
+      const response = await this.client
+        .collection(this.collectionName)
+        .findOneAndUpdate(filter, query, options)
+
+      return response
+    } catch (error) {
+      const errorMessage = `Error while updating insight: ${error instanceof Error ? `${error.message}` : `${error}`}`
+      logger.error(errorMessage)
+      throw new Error(errorMessage)
+    }
+  }
 }

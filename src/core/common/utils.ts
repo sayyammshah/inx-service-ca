@@ -87,3 +87,11 @@ export const generateThreadPath = (payload: Partial<ThreadsDto>): string => {
 
   return threadPath
 }
+
+export const isFlatStructure = (
+  givenObject: Record<string, unknown>,
+): boolean => {
+  return Object.keys(givenObject).every(
+    (key) => givenObject[key] && typeof givenObject[key] !== 'object',
+  )
+}

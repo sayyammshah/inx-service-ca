@@ -83,3 +83,22 @@ export const FetchInsightPost = async (
 
   return response
 }
+
+export const UpdateInsightPost = async (
+  adapters: InsightAdapters,
+  filter: Record<keyof InsightDto, string>,
+  query: { [key: string]: Partial<InsightDto> },
+): Promise<CoreAppResponse> => {
+  const { InsightDataAdapter } = adapters
+  const response = new CoreAppResponse()
+
+  // Validate Payload
+  if (!filter || !query)
+    throw new CoreAppError(
+      AppResStatusCodes.BAD_REQUEST,
+      `${MODULE_NAME}: Invalid Insight Object Provided`,
+    )
+
+  response.queryResponse = await InsightDataAdapter.update(filter, query)
+  return response
+}

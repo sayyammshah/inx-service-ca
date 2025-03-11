@@ -65,6 +65,14 @@ export const CreateInsight = async (
   return response
 }
 
+/**
+ * Fetches insights based on the provided query parameters.
+ *
+ * @param requestContext - The context of the request, containing metadata and other relevant information.
+ * @param queryParams - Optional query parameters to filter the insights.
+ * @returns A promise that resolves to a CoreAppResponse containing the fetched insights.
+ * @throws {AppError} If the response status is not OK, an error is thrown with the appropriate message and status code.
+ */
 export const FetchInsights = async (
   requestContext: RequestContext,
   queryParams?: Record<string, string>,

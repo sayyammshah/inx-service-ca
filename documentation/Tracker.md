@@ -32,12 +32,6 @@
 3. Write Test Cases
 4. Setup CI/CD
 5. Accept Form data for user and insights instead of application/json
+6. Setup Socket for inisghts and its like dislike updates
 
 ---
-
-Fetch Scenarios 3. FetchBy Tags (Personal Recommendation) -> {
-
-- Post Details
-- Stats
-- UIDs
-  } -> Operation aggregate()

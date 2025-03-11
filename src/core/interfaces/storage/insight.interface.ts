@@ -10,6 +10,10 @@ export interface InsightDataInterface {
     filter?: Partial<InsightDto>,
     projection?: Record<string, number>,
   ): Promise<unknown>
-  // update(): Promise<unknown>
+  update(
+    filter: Record<keyof InsightDto, string>,
+    query: { [key: string]: Partial<InsightDto> },
+    options?: Record<string, string>,
+  ): Promise<unknown>
   // delete(): Promise<unknown>
 }

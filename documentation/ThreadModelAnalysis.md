@@ -4,7 +4,7 @@
 
 ```json
 {
-  "entity": "s"tring, // Post ID
+  "insightId": "string", // Post ID
   "author": "string", // Author ID
   "parentThread": "string | null", // Null for comment, threadId for reply
   "threadId": "string", // New ID generated for each document

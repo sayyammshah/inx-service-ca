@@ -33,8 +33,8 @@ This Contains all the database nodels and validations rules applies on this. Als
 | dob            | _Date_   | No       | -          | -          | Unix epoch                  | Date of birth.                                             |
 | gender         | _enum_   | No       | -          | -          | `male`, `female`, `other`   | Gender.                                                    |
 | profilePicture | _string_ | No       | -          | -          | Base64                      | Profile picture (base64 encoded).                          |
-| createdAt      | _Date_   | Yes      | -          | -          | Unix epoch                  | Timestamp when the user document was created.              |
-| updatedAt      | _Date_   | Yes      | -          | -          | Unix epoch                  | Timestamp when the user document was last updated.         |
+| createdAt      | _number_ | Yes      | -          | -          | Unix epoch                  | Timestamp when the user document was created.              |
+| updatedAt      | _number_ | Yes      | -          | -          | Unix epoch                  | Timestamp when the user document was last updated.         |
 
 ## Insights
 
@@ -68,8 +68,8 @@ This Contains all the database nodels and validations rules applies on this. Als
 | content   | _string_   | Yes      | 5          | 500        | -                     | Post content.                                                  |
 | tags      | _string[]_ | No       | -          | 5          | -                     | tags (max 5 tags, 15 chars each).                              |
 | stats     | _object_   | Yes      | -          | -          | -                     | Engagement metrics (`likes`, `dislikes`, `views`, `comments`). |
-| createdAt | _Date_     | Yes      | -          | -          | Unix epoch            | Timestamp when the post was created.                           |
-| updatedAt | _Date_     | Yes      | -          | -          | Unix epoch            | Timestamp when the post was last updated.                      |
+| createdAt | _number_   | Yes      | -          | -          | Unix epoch            | Timestamp when the post was created.                           |
+| updatedAt | _number_   | Yes      | -          | -          | Unix epoch            | Timestamp when the post was last updated.                      |
 
 ## Threads
 
@@ -107,8 +107,8 @@ This Contains all the database nodels and validations rules applies on this. Als
 | path         | _string_           | Yes      | -          | -          | -                     | Hierarchy path as slash-separated IDs (e.g., "root/parent/current"). |
 | content      | _string_           | Yes      | 5          | 500        | -                     | User-written comment/reply text.                                     |
 | stats        | _object_           | Yes      | -          | -          | -                     | Count of likes/dislikes.                                             |
-| createdAt    | _Date_             | Yes      | -          | -          | Unix epoch            | Creation timestamp.                                                  |
-| updatedAt    | _Date_             | Yes      | -          | -          | Unix epoch            | Last update timestamp.                                               |
+| createdAt    | _number_           | Yes      | -          | -          | Unix epoch            | Creation timestamp.                                                  |
+| updatedAt    | _number_           | Yes      | -          | -          | Unix epoch            | Last update timestamp.                                               |
 
 ---
 
@@ -130,9 +130,9 @@ _(Foreign Key Connections)_
 
 ### 3. Insights ↔ Threads
 
-| Insights Field | Relationship | Threads Field | Description                       |
-| -------------- | ------------ | ------------- | --------------------------------- |
-| `entity` (PK)  | →            | `entity` (FK) | Each post can have many comments. |
+| Insights Field   | Relationship | Threads Field    | Description                       |
+| ---------------- | ------------ | ---------------- | --------------------------------- |
+| `insightId` (PK) | →            | `insightId` (FK) | Each post can have many comments. |
 
 ### 4. Threads ↔ Threads (Self)
 

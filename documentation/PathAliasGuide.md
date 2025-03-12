@@ -6,8 +6,7 @@ When we have long paths like `./core/business/entityManager/insights.js` in this
 
 ### Setup Path Alias
 
-- Install dependencies listed in prerequisites file under `ESLint` heading.
-- Configure tsconfig.json with following configuration
+1. Configure tsconfig.json with following configuration
 
 ```json
 // tsconfig.json
@@ -20,7 +19,18 @@ When we have long paths like `./core/business/entityManager/insights.js` in this
 
 ```
 
-- Configure ESLint configurations to display error on relative imports
+2. Configure `.vscode/settings.json` with `"typescript.preferences.importModuleSpecifier": "shortest"`
+
+   - This will help to keep import paths shorter w.r.t which forder your in.
+
+3. Setup Aliases resolver
+
+   - Now this will work well in dev mode but it will throw errors when you try to create build.
+   - To resolve that install `tsc-alias` package which will resolve all you're aliases at build time.
+
+### Optional
+
+- If you prefer to show error on not using alias import configure ESLint configurations to display error on relative imports
 
 ```js
 // eslint.config.js
@@ -39,9 +49,6 @@ When we have long paths like `./core/business/entityManager/insights.js` in this
 ]
 
 ```
-
-- Now this will work well in dev mode but when it will throw errors when you try to create production build.
-- To resolve that install `tsc-alias` package which will resolve all you're aliases at build time
 
 ---
 

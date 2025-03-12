@@ -71,7 +71,6 @@ export const FetchInsightPost = async (
   if (queryParams) filter = queryParams
 
   const insightsData = await InsightDataAdapter.aggregate(filter, projection)
-  // const insightsData = await InsightDataAdapter.read(filter, projection)
 
   if (Array.isArray(insightsData) && insightsData.length == 0) {
     response.status = AppResStatusCodes.OK
@@ -86,19 +85,28 @@ export const FetchInsightPost = async (
 
 export const UpdateInsightPost = async (
   adapters: InsightAdapters,
-  filter: Record<keyof InsightDto, string>,
-  query: { [key: string]: Partial<InsightDto> },
+  toUpdate: {
+    filter: Partial<InsightDto>
+    document: Record<string, unknown>
+    options?: Record<string, unknown>
+  },
 ): Promise<CoreAppResponse> => {
   const { InsightDataAdapter } = adapters
   const response = new CoreAppResponse()
 
+  const { filter, document, options } = toUpdate
+
   // Validate Payload
-  if (!filter || !query)
+  if (!filter || !document)
     throw new CoreAppError(
       AppResStatusCodes.BAD_REQUEST,
-      `${MODULE_NAME}: Invalid Insight Object Provided`,
+      `${MODULE_NAME}: ${CoreUserErrorMsg.INVALID_PARAMS}`,
     )
 
-  response.queryResponse = await InsightDataAdapter.update(filter, query)
+  response.queryResponse = await InsightDataAdapter.update(
+    filter,
+    document,
+    options,
+  )
   return response
 }

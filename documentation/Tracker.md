@@ -23,6 +23,7 @@
    - User Data?
      } -> Operation aggregate()
 8. to aggregate comments
+9. Update Insights Route added
 
 # TODOs
 

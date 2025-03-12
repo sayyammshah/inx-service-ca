@@ -4,6 +4,7 @@ export const TOKEN = {
   DELIMETER: '.',
 }
 
+// Error Constants
 export enum CommonErrorMsg {
   INVALID_PARAMS = 'Invalid Params',
   INVALID_TOKEN = 'Invalid Token',
@@ -44,6 +45,12 @@ export const DATABASE_CONSTANTS = {
     USER: {
       _id: 0,
     },
+    INSIGHTS: {
+      _id: 0,
+    },
+    THREADS: {
+      _id: 0,
+    },
   },
   AGGR: {
     THREADS_LOOKUP: {
@@ -52,4 +59,9 @@ export const DATABASE_CONSTANTS = {
       AS: 'threads',
     },
   },
+}
+
+// General
+export enum UpdateInsightActions {
+  StatsUpdate = 'statsUpdate',
 }

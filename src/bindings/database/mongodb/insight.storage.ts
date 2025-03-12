@@ -90,8 +90,8 @@ export class InsightDataAdapter implements InsightDataInterface {
   }
 
   async update(
-    filter: Record<keyof InsightDto, string>,
-    query: { [key: string]: Partial<InsightDto> },
+    filter: Partial<InsightDto>,
+    document: Record<string, unknown>,
     options: Record<string, string> = {
       returnDocument: 'after',
     },
@@ -101,7 +101,7 @@ export class InsightDataAdapter implements InsightDataInterface {
 
       const response = await this.client
         .collection(this.collectionName)
-        .findOneAndUpdate(filter, query, options)
+        .findOneAndUpdate(filter, document, options)
 
       return response
     } catch (error) {

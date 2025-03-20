@@ -13,14 +13,13 @@
   "scripts": {
     "dev": "tsx --env-file=.env.local --watch src/server.ts",
     "build": "tsc && tsc-alias",
-    "start": "node --env-file=.env.local dist/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/server.js",
     "format": "prettier --write .",
     "lint": "eslint .",
     "lint:staged": "lint-staged",
     "lint:fix": "eslint . --fix",
     "cleanup": "rm -r dist",
-    "prepare": "husky"
+    "prepare": "if [ \"$NODE_ENV\" == \"dev-local\" ]; then husky; fi"
   },
   "dependencies": {
     "cors": "^2.8.5",

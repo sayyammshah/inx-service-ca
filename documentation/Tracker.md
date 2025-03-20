@@ -4,35 +4,41 @@
    - ESLint
    - Prettier
    - Github Actions
+   - Husky -> lint-staged
 2. Routes
    - User
      - CreateAccount
-     - Login
+     - AuthenUser
    - Insight
      - CreateInsight
-     - FetchInsights
+     - FetchInsights - (with threads - aggregate qry)
        - based on authorId
        - FetchAll
-3. Authentication Middleware using crypto
-4. Hash Password
+     - UpdateInsight
+   - Threads
+     - CreateThread
+3. Authentication Middleware - crypto
+4. Hash Passwords
 5. Application Logging
-6. Create and get comments
-7. FetchBy AuthorId | FetchAll | FetchBy insight -> {
-   - Post Details
-   - Comments & Replies
-   - User Data?
-     } -> Operation aggregate()
-8. to aggregate comments
-9. Update Insights Route added
+6. Setup CD Workflow (with DockerHub and Github Container Registery)
+7. Generate dummy data using AI for testing
+8. Update stats.comments in `Insights` Collection when new threads is added - (hint. use aggregation query)
 
 # TODOs
 
 1. Modify FetchInsight routes
    - to fetch personalised recommendations based on tags
-2. Generate dummy data using AI for testing
-3. Write Test Cases
-4. Setup CI/CD
-5. Accept Form data for user and insights instead of application/json
-6. Setup Socket for inisghts and its like dislike updates
+2. Write Test Cases
+3. Accept Form data for user and insights instead of application/json
+4. Setup Socket for inisghts and its like dislike updates
+5. Setup schema validations - (JOI)
+6. For Update queries modify `updatedAt` key
+7. Encrypt and Decrypt payloads and resposes
 
 ---
+
+References:
+
+- Github CD Actions:
+  - [Video](https://youtu.be/RgZyX-e6W9E?si=h3FPkPK7PzNuXcjR)
+  - [Reference](https://github.com/readme/guides/sothebys-github-actions) | Later deploy it to azure app services

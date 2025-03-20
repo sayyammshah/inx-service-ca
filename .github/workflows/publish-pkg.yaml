@@ -27,7 +27,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }} # this will auto set the permission from repository to the package, no need to explicitly set the permissions. Also Links the package with repository. This GITHUB_TOKEN is generated when new repository is created.
+          password: ${{ secrets.INX_CA_PAY }}
 
       - name: Build and push image
         id: push

@@ -24,10 +24,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }} # this will auto set the permission from repository to the package, no need to explicitly set the permissions. Also Links the package with repository. This GITHUB_TOKEN is generated when new repository is created.
 
-      - name: GitHubToken
+      - name: Print GITHUB_TOKEN permissions
         run: |
-          echo ${{ secrets.GITHUB_TOKEN }}
-          echo curl -s -I -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com | grep -i "X-OAuth-Scopes"
+          curl -s -I -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com | grep -i "X-OAuth-Scopes"
 
       - name: Build and push image
         id: push

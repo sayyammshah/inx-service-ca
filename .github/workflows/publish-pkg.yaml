@@ -24,33 +24,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }} # this will auto set the permission from repository to the package, no need to explicitly set the permissions. Also Links the package with repository. This GITHUB_TOKEN is generated when new repository is created.
 
-      - name: Print GITHUB_TOKEN permissions
+      # Simple Build and Push commands with no security and attestations
+      - name: Build and push container
         run: |
-          curl -s -I -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com | grep -i "X-OAuth-Scopes"
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and push image
-        id: push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: ${{ github.event.release.tag_name }} # this will set tags as same as release tag, this will only work if Workflow trigger is set on release event of type published.
-          provenance: true
-          secrets: |
-            "github-token=${{ secrets.GITHUB_TOKEN }}"
-
-      # This step generates artifact attestations, which are important for verifying the integrity and authenticity of the artifacts produced by the workflow.
-      # Artifact attestations provide a way to ensure that the artifacts have not been tampered with and are produced by a trusted source.
-      # This is crucial for maintaining security and trust in the software supply chain, especially when distributing packages to end users or other systems.
-      - name: Generate artifact attestations
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}:${{ github.event.release.tag_name || 'latest' }}
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
-# Simple Build and Push commands with no security and attestations
-# Build Docker container - docker build -t ghcr.io/repoName:latest.
-# Push Docker container - docker push ghcr.io/repoName:latest
+          docker build -t ${{ env.REGISTRY }}/${{ env.REGISTRY }}:${{ github.event.release.tag_name }}
+          docker push ${{ env.REGISTRY }}/${{ env.REGISTRY }}:${{ github.event.release.tag_name }}

@@ -9,6 +9,11 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
+permissions:
+  contents: read
+  packages: write # required to publish container
+  id-token: write # Required for attestation
+
 jobs:
   build-deploy-container:
     runs-on: ubuntu-latest

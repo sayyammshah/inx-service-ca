@@ -2,11 +2,10 @@
 
 ## Description
 
-INX Service CA is a comprehensive service designed to manage and analyze insights, user interactions, and various business rules. It provides a robust architecture for handling different modules, including core business logic, bindings, infrastructure, and shared components.
+InsightX is a platform where users can sign in and share their thoughts on any topic of their choice, allowing others to express their opinions and engage in discussions.
 
 | Index                  | Description                                                                                                                         | Link                                                            |
 | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| Prerequisites          | Lists the prerequisites needed to set up and run the project.                                                                       | [Prerequisites](documentation/Prerequisites.md)                 |
 | Project Setup          | Step-by-step guide on setting up the project, including package manager usage, dependencies, and scripts.                           | [Project Setup](documentation/TechSetup.md)                     |
 | Path Alias Guide       | Instructions on setting up path aliases to make the code more readable and maintainable.                                            | [Path Alias Guide](documentation/PathAliasGuide.md)             |
 | Module Architecture    | Describes the architecture of the core, bindings, infrastructure, and shared modules, including their components and interactions.  | [Module Architecture](documentation/ModuleArchitecture.md)      |

@@ -27,5 +27,5 @@ jobs:
       # Simple Build and Push commands with no security and attestations
       - name: Build and push container
         run: |
-          docker build -t ${{ env.REGISTRY }}/${{ env.REGISTRY }}:latest .
-          docker push ${{ env.REGISTRY }}/${{ env.REGISTRY }}:latest
+          docker build -t ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.event.release.tag_name }} .
+          docker push ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.event.release.tag_name }}

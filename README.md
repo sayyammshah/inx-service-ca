@@ -22,7 +22,7 @@ So to get this project running locally, you can use docker container image or ca
   - Docker
 - Setup:
   - Clone [Docker-Compose](https://gist.github.com/e886139cda30a9bc66051dbaef505030.git) file using command:
-  ```bash
+  ```zsh
       $ git clone https://gist.github.com/e886139cda30a9bc66051dbaef505030.git
   ```
   - Create env file by copying this content and replace with you're own values
@@ -33,7 +33,7 @@ So to get this project running locally, you can use docker container image or ca
     DB_NAME=<DATABASE_NAME>
   ```
   - After above listed steps run this command to get your app up and running
-  ```bash
+  ```zsh
     $ docker compose -f inx-docker-compose.yaml up
   ```
   _That's all your app should be up and running_
@@ -46,20 +46,20 @@ So to get this project running locally, you can use docker container image or ca
   - nodejs
 - Or else you can clone the repository
 
-```bash
+```zsh
     $ git clone https://github.com/sayyammshah/inx-service-ca.git
 ```
 
 - Copy env file from previous option and replace with your own values.
 - Install all dependencies
 
-```bash
+```zsh
     $ pnpm install
 ```
 
 - Start the application in development mode
 
-```bash
+```zsh
     $ pnpm run dev
 ```
 

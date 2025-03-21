@@ -20,7 +20,7 @@
     "lint:staged": "lint-staged",
     "lint:fix": "eslint . --fix",
     "cleanup": "rm -r dist",
-    "prepare": "husky install"
+    "prepare": "if [ \"$NODE_ENV\" == \"dev-local\" ]; then husky; fi"
   },
   "dependencies": {
     "cors": "^2.8.5",

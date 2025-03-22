@@ -1,5 +1,7 @@
 export enum ENVS {
+  DEV_LOCAL = 'dev-local',
   DEV = 'development',
+  PROD = 'production',
 }
 
 export const ResponseStatusCodes = {

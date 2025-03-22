@@ -5,6 +5,15 @@ import { entityValidator } from '@core/common/validations.js'
 import { MODULE_NAME, RuleKeysInsights } from '@core/common/constants.js'
 import { Calculate, Operations } from '@core/common/utils.js'
 
+type Stats =
+  | {
+      likes: number
+      dislikes: number
+      views: number
+      comments: number
+    }
+  | Record<string, number>
+
 export class Insights {
   // Immutable Properties
   readonly insightId: string
@@ -14,14 +23,7 @@ export class Insights {
   // Mutable Properties
   title: string
   content: string
-  stats:
-    | {
-        likes: number
-        dislikes: number
-        views: number
-        comments: number
-      }
-    | Record<string, number>
+  stats: Stats
   updatedAt: number
   tags: string[]
 
@@ -38,7 +40,7 @@ export class Insights {
     title: string
     content: string
     tags?: string[] | []
-    stats?: Record<string, number> | null
+    stats?: Stats | null
   }) {
     this.insightId = insightId
     this.authorId = authorId
@@ -51,7 +53,8 @@ export class Insights {
       views: 0,
       comments: 0,
     }
-    this.createdAt = this.updatedAt = new Date().getTime()
+    this.createdAt = new Date().getTime()
+    this.updatedAt = this.createdAt
   }
 
   // Helper Functions

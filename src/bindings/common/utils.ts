@@ -4,6 +4,7 @@ import { UserDto } from '@core/business'
 import { Request } from 'express'
 import { createHmac, randomUUID } from 'node:crypto'
 import { IncomingHttpHeaders } from 'node:http'
+import { fileURLToPath } from 'node:url'
 import { RequestMethods } from 'shared/constants.js'
 import { generateUUID } from 'shared/utils.js'
 
@@ -14,7 +15,7 @@ export function getRequestContext(req: Request): RequestContext {
     method: req.method as RequestMethods,
     requestId: (headers['request-id'] ?? generateUUID()) as string,
     userAgent: headers['user-agent'],
-    correlationId: (headers['x-Correlation-id'] ?? generateUUID()) as string,
+    correlationId: headers['x-Correlation-id'] as string, // optional
   }
 
   return requestContext
@@ -63,3 +64,6 @@ export const tokenManager = () => {
 
   return { generate, verify }
 }
+
+export const genStack = (path: string): string =>
+  `/src${fileURLToPath(path).split('/src')[1]}`

@@ -70,7 +70,15 @@ _That's all your app should be up and running_
     git clone https://github.com/sayyammshah/inx-service-ca.git
   ```
 
-- Copy the template above to create an `.env` file, then modify the values or use it as is.
+  - Create an `.env.local` file by copying this template modify the values or use it as is.
+
+    ```bash
+      NODE_ENV=development
+      PORT=3001
+      DB_CONNECTION_URL=mongodb://localhost:27017/ # or it to a hosted MongoDB connection URL.
+      DB_NAME=insightxDb
+    ```
+
 - Install dependencies
 
   ```bash

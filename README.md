@@ -66,18 +66,20 @@ _That's all your app should be up and running_
   - pnpm
   - mongodb community-server
 
+- Clone Repository
+
   ```bash
     git clone https://github.com/sayyammshah/inx-service-ca.git
   ```
 
-  - Create an `.env.local` file by copying this template modify the values or use it as is.
+- Create an `.env.local` file by copying this template modify the values or use it as is.
 
-    ```bash
-      NODE_ENV=development
-      PORT=3001
-      DB_CONNECTION_URL=mongodb://localhost:27017/ # or it to a hosted MongoDB connection URL.
-      DB_NAME=insightxDb
-    ```
+  ```bash
+    NODE_ENV=development
+    PORT=3001
+    DB_CONNECTION_URL=mongodb://localhost:27017/ # or it to a hosted MongoDB connection URL.
+    DB_NAME=insightxDb
+  ```
 
 - Install dependencies
 

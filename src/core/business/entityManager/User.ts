@@ -50,8 +50,15 @@ export class User {
   static validate(user: UserDto, isAuth: boolean = false): validationResult {
     let message = ''
     const toValidate = flatten(user)
+    let fieldsRequired = UserSchema.requiredFields
 
-    message = validateRequiredFields(toValidate, UserSchema.requiredFields)
+    if (isAuth) {
+      fieldsRequired = fieldsRequired.filter((field) =>
+        UserAuthFields.includes(field),
+      )
+    }
+
+    message = validateRequiredFields(toValidate, fieldsRequired)
     if (message) {
       return {
         isValid: false,

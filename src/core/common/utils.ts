@@ -4,11 +4,27 @@ import {
   HASH,
   TIME_CONVERSIONS,
 } from '@core/common/constants.js'
-import { GenSecretsReturnRes } from '@core/common/types.js'
-import { pbkdf2Sync, randomBytes } from 'node:crypto'
+import { GenSecretsReturnRes, RuleSetChecks } from '@core/common/types.js'
+import { pbkdf2Sync, randomBytes, randomUUID } from 'node:crypto'
+import { isObject } from './validations.js'
 
-export const generateId = (): string =>
-  Date.now().toString(16) + randomBytes(10).toString('hex')
+export const generateId = (): string => randomUUID().replace(/-/g, '')
+
+export const flatten = (
+  data: Record<string, unknown>,
+  prefix: string = '',
+): Record<string, unknown> => {
+  let result: Record<string, unknown> = {}
+  for (const key in data) {
+    const value = data[key]
+    if (!isObject(data[key])) {
+      result[prefix ? `${prefix}.${key}` : key] = value
+      continue
+    }
+    result = { ...result, ...flatten(value as Record<string, unknown>, key) }
+  }
+  return result
+}
 
 export const hashManager = () => {
   function generate(payload: string): string {
@@ -74,6 +90,25 @@ export const Calculate = (): {
   convertDateInMinutes: (args) =>
     Math.floor((Date.now() - args[0]) / TIME_CONVERSIONS.MINUTES),
 })
+
+export function execOperations<T>(condition: RuleSetChecks, data: T): boolean {
+  const { operator, operands, calculate } = condition
+
+  if (calculate) {
+    const { field, operation } = calculate
+    const indexOfField = operands.indexOf(field)
+    const calcArgs = operands.map((operand) =>
+      typeof operand === 'string' ? data[operand as keyof T] : operand,
+    ) as number[]
+    const calculatedValue = Calculate()[operation](calcArgs)
+    operands[indexOfField] = calculatedValue
+  }
+
+  const args = operands.map((operand) =>
+    typeof operand === 'string' ? data[operand as keyof T] : operand,
+  )
+  return Operations()[operator](args)
+}
 
 export const generateThreadPath = (payload: Partial<ThreadsDto>): string => {
   // rootThreadId/parentThreadId/threadId

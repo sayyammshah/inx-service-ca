@@ -2,63 +2,52 @@ import {
   InsightDataInterface,
   UserDataInterface,
 } from '@core/storage-interface'
-import { RuleKeys } from './constants.ts'
 
-export type validationResult = {
-  isValid: boolean
-  message: string
+export type RuleSetChecks = {
+  operator: string
+  operands: Array<unknown>
+  calculate?: {
+    field: string
+    operation: string
+  }
 }
+export type RuleSetActions = RuleSetChecks | null
 
-export type ChildValidations = Omit<
-  RulesType['fields'][string]['validations'],
-  'arrLen' | 'children'
->
-
-export type RulesType = {
+export interface EntitySchema {
+  requiredFields: Array<string>
   fields: {
     [key: string]: {
       description: string
       validations: {
-        type:
-          | 'string'
-          | 'number'
-          | 'boolean'
-          | 'function'
-          | 'object'
-          | 'array'
-          | 'enum'
-        required: boolean
-        format: RegExp | string | null
-        charLen: string | null // add chararacter length '-' seperated
-        arrLen: number | null // applicable only if array
-        enumList: Array<unknown> | Record<string, unknown> | null
-        children: {
-          [key: string]: {
-            description: string
-            validations: ChildValidations
-          }
-        } | null
+        type: 'string' | 'number' | 'boolean' | 'object' | 'array' | 'enum'
+        size?: string | null // represents character length if field is of tupe string and array length if field is of type array
+        list?: Array<unknown> | Record<string, unknown> | null
+        childType?: string | null // applicable only if type is array or object
+        pattern?: RegExp | null
+        dependents?: Array<string> // applicable only in case of nested structure
       }
     }
   }
-  core?: {
-    [key in RuleKeys]: {
+  ruleSet?: {
+    [key: string]: {
       name: string
       description: string
       initialCase: string
       cases: {
         [key: string]: {
-          ifCondition: {
-            operator: string
-            operands: Array<unknown>
-          }
-          thenCondition: { operator: string; operands: Array<unknown> } | null
-          failureMessage: string
+          check: RuleSetChecks
+          action: RuleSetActions
+          errorTxt: string
           nextCase: string | null
         }
       }
     }
   }
+}
+
+export type validationResult = {
+  isValid: boolean
+  validationErr: string
 }
 
 export type GenSecretsReturnRes = {

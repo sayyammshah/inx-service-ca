@@ -26,7 +26,7 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const body = req.body
     const result: ControllerResponse = await CreateUser(body, requestContext)
-    const response = new ApiResponse(result.status, result)
+    const response = new ApiResponse(result)
     logger.info(
       { response },
       `${requestContext.requestId}: Controller response - ${CreateUser.name}()`,
@@ -62,7 +62,7 @@ router.post(
         body,
         requestContext,
       )
-      const response = new ApiResponse(result.status, result)
+      const response = new ApiResponse(result)
       logger.info(
         { response },
         `${requestContext.requestId}: Controller response - ${AuthenticateUser.name}()`,

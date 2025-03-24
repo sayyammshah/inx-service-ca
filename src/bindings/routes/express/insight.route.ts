@@ -21,7 +21,7 @@ router.post(
     try {
       const body = req.body
       const result: CoreAppResponse = await CreateInsight(body, requestContext)
-      const response = new ApiResponse(result.status, result)
+      const response = new ApiResponse(result)
       logger.info(
         { response },
         `${requestContext.requestId}: Controller response - ${CreateInsight.name}()`,
@@ -48,7 +48,7 @@ router.get(
         requestContext,
         queryParams as Record<string, string>,
       )
-      const response = new ApiResponse(result.status, result)
+      const response = new ApiResponse(result)
       logger.info(
         { response },
         `${requestContext.requestId}: Controller response - ${FetchInsights.name}()`,
@@ -72,7 +72,7 @@ router.patch(
     try {
       const body = req.body
       const result: CoreAppResponse = await UpdateInsight(body, requestContext)
-      const response = new ApiResponse(result.status, result)
+      const response = new ApiResponse(result)
       logger.info(
         { response },
         `${requestContext.requestId}: Controller response - ${UpdateInsight.name}()`,

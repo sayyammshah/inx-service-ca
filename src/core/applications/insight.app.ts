@@ -25,11 +25,11 @@ export const CreateNewInsight = async (
   const response = new CoreAppResponse()
 
   // Validate Payload
-  const { isValid, message } = Insights.validate(payload)
+  const { isValid, validationErr } = Insights.validate(payload)
   if (!isValid)
     throw new CoreAppError(
       AppResStatusCodes.BAD_REQUEST,
-      `${MODULE_NAME}: Invalid Insight Object Provided: ${message}`,
+      `${MODULE_NAME}\nInvalid payload: ${validationErr}`,
     )
 
   // Create New Object

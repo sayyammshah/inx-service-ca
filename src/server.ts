@@ -54,12 +54,7 @@ app.use(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (err: Error | AppError, req: Request, res: Response, next: NextFunction) => {
     const errObject = AppError.generateGlobalErrorObject(err)
-    res.status(errObject.status).json(
-      new ApiResponse(errObject.status, null, {
-        cause: errObject.cause,
-        stack: errObject.stack ?? '',
-      }),
-    )
+    res.status(errObject.status).json(new ApiResponse(null, errObject))
   },
 )
 

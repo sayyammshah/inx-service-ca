@@ -17,7 +17,7 @@ router.post(
     try {
       const body = req.body
       const result: CoreAppResponse = await CreateThread(body, requestContext)
-      const response = new ApiResponse(result.status, result)
+      const response = new ApiResponse(result)
       logger.info(
         { response },
         `${requestContext.requestId}: Controller response - ${CreateThread.name}()`,

@@ -105,6 +105,11 @@ Resources:
 
 - Container image for this project is available [here.]([https://github.com/sayyammshah/inx-service-ca/pkgs/container/inx-service-ca])
 - Docker-compose file is available [here.](https://gist.github.com/e886139cda30a9bc66051dbaef505030.git)
+- View collection [here.](https://www.postman.com/red-trinity-198591/api-box/collection/zupxh38/inx-service-ca)
+
+  OR
+
+  [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://app.getpostman.com/run-collection/17286362-d4ffe187-b2fd-4207-bee2-f7a9800f2397?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D17286362-d4ffe187-b2fd-4207-bee2-f7a9800f2397%26entityType%3Dcollection%26workspaceId%3D555ae0bc-9f9b-4f70-a395-d0c7947b109e#?env%5BGlobal%5D=W3sia2V5IjoiQmFzZVVybCIsInZhbHVlIjoiaHR0cDovL2xvY2FsaG9zdDozMDAxIiwiZW5hYmxlZCI6dHJ1ZSwidHlwZSI6ImRlZmF1bHQiLCJzZXNzaW9uVmFsdWUiOiJodHRwOi8vbG9jYWxob3N0OjMwMDEiLCJjb21wbGV0ZVNlc3Npb25WYWx1ZSI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMSIsInNlc3Npb25JbmRleCI6MH1d)
 
 ---
 

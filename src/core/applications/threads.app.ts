@@ -12,11 +12,11 @@ export const CreateNewThread = async (
   const response = new CoreAppResponse()
 
   // Validate Payload
-  const { isValid, message } = Threads.validate(payload)
+  const { isValid, validationErr } = Threads.validate(payload)
   if (!isValid)
     throw new CoreAppError(
       AppResStatusCodes.BAD_REQUEST,
-      `${MODULE_NAME}: Invalid Thread Object Provided: ${message}`,
+      `${MODULE_NAME}: Invalid Thread Object Provided: ${validationErr}`,
     )
 
   const threadId = generateId()
@@ -28,8 +28,10 @@ export const CreateNewThread = async (
   }
 
   // Validate Hierarchy
-  const { isValid: hierarchyIsValid, message: hierarchyValidationMessage } =
-    Threads.validateHierarchy(threadObj)
+  const {
+    isValid: hierarchyIsValid,
+    validationErr: hierarchyValidationMessage,
+  } = Threads.validateHierarchy(threadObj)
   if (!hierarchyIsValid)
     throw new CoreAppError(
       AppResStatusCodes.CONFLICT,

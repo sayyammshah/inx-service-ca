@@ -7,6 +7,8 @@ on:
   push:
     branches: ['development', 'main']
 
+  workflow_dispatch:
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build:
@@ -32,9 +34,3 @@ jobs:
 
       - name: CI Completed
         run: echo CI Completed
-
-      # Runs a set of commands using the runners shell
-      # - name: Run a multi-line script
-      #   run: |
-      #     echo Add other actions to build,
-      #     echo test, and deploy your project.

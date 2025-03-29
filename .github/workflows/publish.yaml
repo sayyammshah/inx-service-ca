@@ -1,17 +1,16 @@
 # Reference https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#publishing-a-package-using-an-action
 
-name: Build and Publish a container
+name: Create and publish a container
 on:
   release:
     types: [published]
-  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ghcr.io/${{ github.repository }}:${{ github.event.release.tag_name }}
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  publish:
+  build-deploy-container:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,30 +24,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }} # this will auto set the permission from repository to the package, no need to explicitly set the permissions. Also Links the package with repository. This GITHUB_TOKEN is generated when new repository is created.
 
-      - name: Extract image meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.IMAGE_NAME }}
-
-      - name: Build and push image
-        id: build-and-push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-
-      - name: generate artifact attestation
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-name: ${{ env.IMAGE_NAME }}
-          subject-digest: ${{ steps.build-and-push.outputs.digest }}
-          push-to-registry: true
-
       # Simple Build and Push commands with no security and attestations
-      # - name: Build and Push container
-      #   run: |
-      #     docker build -t ${{ env.IMAGE_NAME }} .
-      #     docker push ${{ env.IMAGE_NAME }}
+      - name: Build and push container
+        run: |
+          docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.event.release.tag_name }} .
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.event.release.tag_name }}

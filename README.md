@@ -8,7 +8,9 @@ _Backend service for project **InsightX**, a platform where users can sign in an
 
 ### Badges
 
-[![Create and publish a container](https://github.com/sayyammshah/inx-service-ca/actions/workflows/publish-pkg.yaml/badge.svg)](https://github.com/sayyammshah/inx-service-ca/actions/workflows/publish-pkg.yaml)
+[![Static Code CI](https://github.com/sayyammshah/inx-service-ca/actions/workflows/checks.yaml/badge.svg)](https://github.com/sayyammshah/inx-service-ca/actions/workflows/checks.yaml)
+
+[![Build and Publish a container](https://github.com/sayyammshah/inx-service-ca/actions/workflows/publish.yaml/badge.svg)](https://github.com/sayyammshah/inx-service-ca/actions/workflows/publish.yaml)
 
 ---
 

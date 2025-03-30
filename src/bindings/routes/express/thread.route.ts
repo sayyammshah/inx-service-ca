@@ -12,16 +12,22 @@ router.post(
   '/',
   authenticateRequest,
   async (req: Request, res: Response, next: NextFunction) => {
+    const requestContext = getRequestContext(req)
+    logger.info({ requestContext }, `Request context generated`)
     try {
       const body = req.body
-      const requestContext = getRequestContext(req)
-      logger.info(requestContext, 'CreateThread controller called')
       const result: CoreAppResponse = await CreateThread(body, requestContext)
-      const response = new ApiResponse(result.status, result)
-      logger.info(response)
+      const response = new ApiResponse(result)
+      logger.info(
+        { response },
+        `${requestContext.requestId}: Controller response - ${CreateThread.name}()`,
+      )
       res.status(result.status).json(response)
     } catch (error) {
-      logger.error(error)
+      logger.error(
+        { error },
+        `${requestContext.requestId}: Failed to create thread`,
+      )
       next(error)
     }
   },

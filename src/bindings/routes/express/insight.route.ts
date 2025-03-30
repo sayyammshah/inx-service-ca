@@ -16,16 +16,22 @@ router.post(
   '/',
   authenticateRequest,
   async (req: Request, res: Response, next: NextFunction) => {
+    const requestContext = getRequestContext(req)
+    logger.info({ requestContext }, `Request context generated`)
     try {
       const body = req.body
-      const requestContext = getRequestContext(req)
-      logger.info(requestContext, `${CreateInsight.name} controller called`)
       const result: CoreAppResponse = await CreateInsight(body, requestContext)
-      const response = new ApiResponse(result.status, result)
-      logger.info(response)
+      const response = new ApiResponse(result)
+      logger.info(
+        { response },
+        `${requestContext.requestId}: Controller response - ${CreateInsight.name}()`,
+      )
       res.status(result.status).json(response)
     } catch (error) {
-      logger.error(error)
+      logger.error(
+        { error },
+        `${requestContext.requestId}: Insight creation failed`,
+      )
       next(error)
     }
   },
@@ -34,19 +40,25 @@ router.get(
   '/',
   authenticateRequest,
   async (req: Request, res: Response, next: NextFunction) => {
+    const requestContext = getRequestContext(req)
+    logger.info({ requestContext }, `Request context generated`)
     try {
       const queryParams = req.query
-      const requestContext = getRequestContext(req)
-      logger.info(requestContext, `${FetchInsights.name} controller called`)
       const result: CoreAppResponse = await FetchInsights(
         requestContext,
         queryParams as Record<string, string>,
       )
-      const response = new ApiResponse(result.status, result)
-      logger.info(response)
+      const response = new ApiResponse(result)
+      logger.info(
+        { response },
+        `${requestContext.requestId}: Controller response - ${FetchInsights.name}()`,
+      )
       res.status(result.status).json(response)
     } catch (error) {
-      logger.error(error)
+      logger.error(
+        { error },
+        `${requestContext.requestId}: Failed to fetch insights`,
+      )
       next(error)
     }
   },
@@ -55,16 +67,22 @@ router.patch(
   '/',
   authenticateRequest,
   async (req: Request, res: Response, next: NextFunction) => {
+    const requestContext = getRequestContext(req)
+    logger.info({ requestContext }, `Request context generated`)
     try {
       const body = req.body
-      const requestContext = getRequestContext(req)
-      logger.info(requestContext, `${UpdateInsight.name} controller called`)
       const result: CoreAppResponse = await UpdateInsight(body, requestContext)
-      const response = new ApiResponse(result.status, result)
-      logger.info(response)
+      const response = new ApiResponse(result)
+      logger.info(
+        { response },
+        `${requestContext.requestId}: Controller response - ${UpdateInsight.name}()`,
+      )
       res.status(result.status).json(response)
     } catch (error) {
-      logger.error(error)
+      logger.error(
+        { error },
+        `${requestContext.requestId}: Insight update failed`,
+      )
       next(error)
     }
   },

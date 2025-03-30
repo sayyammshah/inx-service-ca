@@ -3,10 +3,9 @@ import { AuthenticateUserAccount, CreateUserAccount } from '@core/app'
 import { UserDataAdapter } from '@bindings/mongo-database'
 import { logger } from 'shared/logger.js'
 import { ControllerResponse, RequestContext } from '@bindings/common/types.js'
-import { tokenManager } from '@bindings/common/utils.js'
+import { genStack, tokenManager } from '@bindings/common/utils.js'
 import { ResponseStatusCodes } from 'shared/constants.js'
 import { AppError } from 'shared/apiResponseCls.js'
-import { fileURLToPath } from 'node:url'
 import { DATABASE_CONSTANTS, UserErrorMsg } from '@bindings/common/constants.js'
 import { CoreAppResponse } from '@core/common/coreAppResponse.js'
 
@@ -14,19 +13,17 @@ import { CoreAppResponse } from '@core/common/coreAppResponse.js'
  * This function is responsible for creating a new user account.
  * It takes a body object containing user details as input and returns a ControllerResponse.
  *
- * @param body - An object containing user details. The keys can be any string, but the values must be either a string or a number.
+ * @param body - An object containing user details.
  * @returns A Promise that resolves to a ControllerResponse.
  *
  * @throws AppError - If the input body is empty, an AppError is thrown with a BAD_REQUEST status code and an appropriate error message.
  * @throws AppError - If an error occurs while creating the user account, an AppError is thrown with the corresponding status code and error message.
  */
 export async function CreateUser(
-  body: {
-    [key: string]: string | number
-  },
-  requestContext: RequestContext,
+  body: Record<string, unknown>,
+  { requestId }: RequestContext,
 ): Promise<ControllerResponse> {
-  logger.info(requestContext, `${CreateUser.name} controller called`)
+  logger.info(`${requestId}: ${CreateUser.name} controller called`)
 
   let response: ControllerResponse | null = null
 
@@ -34,13 +31,15 @@ export async function CreateUser(
     const appError = new AppError(
       ResponseStatusCodes.BAD_REQUEST,
       UserErrorMsg.INVALID_PARAMS,
-      `${fileURLToPath(import.meta.url)} ${CreateUser.name}`,
+      `${genStack(import.meta.url)} - ${CreateUser.name}()`,
     )
     throw appError
   }
 
   // Call core module
-  logger.info(requestContext, `preparing payload DTO`)
+  logger.info(
+    `${requestId}: Core module process initiated - ${CreateUserAccount.name}()`,
+  )
   const payload: UserDto = generateUserDto(body)
   const result: CoreAppResponse = await CreateUserAccount(
     {
@@ -53,12 +52,15 @@ export async function CreateUser(
     const errMsg = new AppError(
       result.status ?? ResponseStatusCodes.INTERNAL_SERVER_ERROR,
       `${UserErrorMsg.FAILED_ACCOUNT_CREATION}${result.message}`,
-      `${fileURLToPath(import.meta.url)} ${CreateUser.name}`,
+      `${genStack(import.meta.url)} - ${CreateUser.name}()`,
     )
     throw errMsg
   }
+
+  logger.info(`${requestId}: User created successfully`)
+
   // Generate Token - Attached it to Response
-  logger.info(requestContext, `Generating Token`)
+  logger.info(`${requestId}: Generating token`)
   const token: string = tokenManager().generate({
     userId: result.uid,
     name: payload.name,
@@ -68,8 +70,6 @@ export async function CreateUser(
     ...result,
     token,
   }
-
-  logger.info(requestContext, `User created successfully`)
   return response
 }
 
@@ -78,7 +78,7 @@ export async function CreateUser(
  * It takes a body object containing user details and a request context as input,
  * and returns a Promise that resolves to a ControllerResponse.
  *
- * @param body - An object containing user details. The keys can be any string, but the values must be either a string or a number.
+ * @param body - An object containing user details..
  * @param requestContext - An object containing contextual information about the request.
  *
  * @returns A Promise that resolves to a ControllerResponse.
@@ -88,12 +88,10 @@ export async function CreateUser(
  * @throws AppError - If an error occurs while authenticating the user account, an AppError is thrown with the corresponding status code and error message.
  */
 export async function AuthenticateUser(
-  body: {
-    [key: string]: string | number
-  },
-  requestContext: RequestContext,
+  body: Record<string, unknown>,
+  { requestId }: RequestContext,
 ): Promise<ControllerResponse> {
-  logger.info(requestContext, `${AuthenticateUser.name} controller called`)
+  logger.info(`${requestId}: ${AuthenticateUser.name} controller called`)
 
   let response: ControllerResponse | null = null
 
@@ -101,13 +99,15 @@ export async function AuthenticateUser(
     const appError = new AppError(
       ResponseStatusCodes.BAD_REQUEST,
       UserErrorMsg.INVALID_PARAMS,
-      `${fileURLToPath(import.meta.url)} ${AuthenticateUser.name}`,
+      `${genStack(import.meta.url)} - ${AuthenticateUser.name}()`,
     )
     throw appError
   }
 
   // Call core module
-  logger.info(requestContext, `Preparing payload DTO`)
+  logger.info(
+    `${requestId}: Core module process initiated - ${AuthenticateUserAccount.name}()`,
+  )
   const payload: UserDto = generateUserDto(body)
   const result = await AuthenticateUserAccount(
     {
@@ -121,13 +121,15 @@ export async function AuthenticateUser(
     const errMsg = new AppError(
       result.status ?? ResponseStatusCodes.INTERNAL_SERVER_ERROR,
       `${UserErrorMsg.FAILED_ACCOUNT_AUTH}${result.message}`,
-      `${fileURLToPath(import.meta.url)} ${AuthenticateUser.name}`,
+      `${genStack(import.meta.url)} - ${AuthenticateUser.name}()`,
     )
     throw errMsg
   }
 
+  logger.info(`${requestId}: User authenticated`)
+
   // Generate Token - Attached it to Response
-  logger.info(requestContext, `Generating Token`)
+  logger.info(`${requestId}: Generating token`)
   const token: string = tokenManager().generate({
     userId: result.uid,
     name: payload.name,
@@ -137,7 +139,5 @@ export async function AuthenticateUser(
     ...result,
     token,
   }
-
-  logger.info(requestContext, `User authenticated successfully`)
   return response
 }

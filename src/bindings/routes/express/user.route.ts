@@ -10,7 +10,7 @@ const router = express.Router()
 /**
  * Handles POST requests to create a new user.
  *
- * @remarks
+ * @description
  * This route is responsible for processing incoming POST requests to create a new user.
  * It extracts the request body, calls the `CreateUser` controller function, and sends a response back to the client.
  *
@@ -21,16 +21,19 @@ const router = express.Router()
  * @returns {Promise<void>} - A promise that resolves when the request is processed.
  */
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
+  const requestContext = getRequestContext(req)
+  logger.info({ requestContext }, `Request context generated`)
   try {
     const body = req.body
-    const requestContext = getRequestContext(req)
-    logger.info(requestContext, 'CreateUser controller called')
     const result: ControllerResponse = await CreateUser(body, requestContext)
-    const response = new ApiResponse(result.status, result)
-    logger.info(response)
+    const response = new ApiResponse(result)
+    logger.info(
+      { response },
+      `${requestContext.requestId}: Controller response - ${CreateUser.name}()`,
+    )
     res.status(result.status).json(response)
   } catch (error) {
-    logger.error(error)
+    logger.error({ error }, `${requestContext.requestId}: User creation failed`)
     next(error)
   }
 })
@@ -51,18 +54,22 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
 router.post(
   '/auth',
   async (req: Request, res: Response, next: NextFunction) => {
+    const requestContext = getRequestContext(req)
+    logger.info({ requestContext }, `Request context generated`)
     try {
       const body = req.body
-      const requestContext = getRequestContext(req)
       const result: ControllerResponse = await AuthenticateUser(
         body,
         requestContext,
       )
-      const response = new ApiResponse(result.status, result)
-      logger.info(response)
+      const response = new ApiResponse(result)
+      logger.info(
+        { response },
+        `${requestContext.requestId}: Controller response - ${AuthenticateUser.name}()`,
+      )
       res.status(result.status).json(response)
     } catch (error) {
-      logger.error(error)
+      logger.error({ error }, 'User authentication failed')
       next(error)
     }
   },

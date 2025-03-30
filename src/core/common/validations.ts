@@ -1,121 +1,94 @@
-import { RULES_CONSTANTS, ValidationErrors } from './constants.js'
-import { ChildValidations, RulesType, validationResult } from './types.js'
+import { ValidationErrors } from './constants.js'
+import { EntitySchema, validationResult } from './types.js'
 
-export function mandatoryFieldValidation<T>(
-  value: T,
-  required: boolean,
-): string {
-  if (required && !value) {
-    return ValidationErrors.REQUIRED
-  }
-  return ''
-}
+// Helpers
+export const isArray = (value: unknown) =>
+  Object.prototype.toString.call(value) === '[object Array]'
+export const isObject = (value: unknown) =>
+  Object.prototype.toString.call(value) === '[object Object]'
 
-export function typeValidation<T = string>(value: T, type: string): string {
-  if (!value) return ''
-
-  if (type === 'array' && Array.isArray(value)) return ''
-
-  if (typeof value !== type) return ValidationErrors.TYPE
-  return ''
-}
-
-export const lengthValidation = (
-  value: string,
-  minLen: number | null,
-  maxLen: number | null,
+export const validateRequiredFields = (
+  toValidate: Record<string, unknown>,
+  validateFrom: Array<string>,
 ): string => {
-  if (!value) return ''
-
-  if (minLen !== null && value.length < minLen)
-    return `${ValidationErrors.LENGTH_MIN} ${minLen}`
-
-  if (maxLen !== null && value.length > maxLen)
-    return `${ValidationErrors.LENGTH_MAX} ${maxLen}`
-
-  return ''
+  let msg = ''
+  for (const field of validateFrom) {
+    const value = toValidate[field]
+    if (!value) {
+      msg = `${field} is required`
+      break
+    }
+  }
+  return msg
 }
 
-export function formatValidation(
-  value: string,
-  format: RegExp | string | null,
-): string {
-  if (!value) return ''
-
-  if (format instanceof RegExp && format.test(value) === false)
-    return ValidationErrors.FORMAT
-  return ''
-}
-
-export function enumValidation<T>(
-  value: T,
-  enumList: Array<unknown> | Record<string, unknown> | null,
-): string {
-  if (!value) return ''
-
+export function isValidType<T = string>(value: T, type: string): string {
   if (
-    enumList &&
-    ((Array.isArray(enumList) && !enumList.includes(value as T)) ||
-      !Object.values(enumList).includes(value as T))
-  )
-    return ValidationErrors.INVALID
+    !value ||
+    !type ||
+    (type === 'array' && isArray(value)) ||
+    (type === 'object' && isObject(value)) ||
+    typeof value === type
+  ) {
+    return ''
+  }
+  return ValidationErrors.TYPE
+}
+
+export const isValidSize = (value: unknown, size: string): string => {
+  if (!value || !size) return ''
+
+  if (isArray(value) && (value as Array<unknown>).length > parseInt(size))
+    return `${ValidationErrors.LENGTH_MAX} ${size}`
+
+  const [min, max] = size.split('-').map((val) => parseInt(val))
+  if ((value as string).length < min)
+    return `${ValidationErrors.LENGTH_MIN} ${min}`
+  if ((value as string).length > max)
+    return `${ValidationErrors.LENGTH_MAX} ${max}`
   return ''
 }
 
-export const entityValidator = <T>(
+export function isValidPattern(value: string, pattern: RegExp | null): string {
+  if (!value || !pattern) return ''
+  if (pattern.test(value) === false) return ValidationErrors.FORMAT
+  return ''
+}
+
+export function isValidListValue<T>(
+  value: T,
+  list: Array<unknown> | Record<string, unknown> | null,
+): string {
+  if (
+    !value ||
+    !list ||
+    (isArray(list) && (list as Array<T>).includes(value as T)) ||
+    (isObject(list) && Object.values(list).includes(value as T))
+  ) {
+    return ''
+  }
+
+  return ValidationErrors.INVALID
+}
+
+export const validator = <T>(
   field: string,
   value: T,
-  validations: RulesType['fields'][string]['validations'] | ChildValidations,
+  validations: EntitySchema['fields'][string]['validations'],
 ): validationResult => {
-  const { required, type, format, charLen, enumList } = validations
-  const children = 'children' in validations ? validations.children : null
-  const arrLen = 'arrLen' in validations ? validations.arrLen : null
-  let [minLen, maxLen]: Array<number | null> = [null, null]
+  let validationErr: string | null = ''
 
-  let validationErrorMessage = ''
+  const { type, size, pattern, list } = validations
 
-  if (type === 'object' && children) {
-    for (const key of Object.keys(children)) {
-      validationErrorMessage = entityValidator(
-        key,
-        (value as Record<string, unknown>)[key],
-        children[key].validations,
-      ).message
-      if (validationErrorMessage) break
-    }
-  } else if (type === 'array' && arrLen) {
-    validationErrorMessage =
-      (value as Array<string>).length > arrLen
-        ? `${ValidationErrors.LENGTH_MAX} ${arrLen}`
-        : ''
-  }
-
-  if (validationErrorMessage) {
-    return {
-      isValid: false,
-      message: `'${field}'/${validationErrorMessage}`,
-    }
-  }
-
-  if (charLen) {
-    ;[minLen, maxLen] = charLen
-      .split(RULES_CONSTANTS.LENTH_DELIMITER)
-      .map((val) => parseInt(val))
-  }
-
-  validationErrorMessage =
-    (required && mandatoryFieldValidation<typeof value>(value, required)) ||
-    (type && typeValidation<typeof value>(value, type)) ||
-    ((minLen || maxLen) && lengthValidation(value as string, minLen, maxLen)) ||
-    (format && formatValidation(value as string, format)) ||
-    (enumList && enumValidation<typeof value>(value, enumList)) ||
+  validationErr =
+    isValidType<typeof value>(value, type) ||
+    (size && isValidSize(value as string, size)) ||
+    (pattern && isValidPattern(value as string, pattern)) ||
+    (list && isValidListValue(value, list)) ||
     ''
 
   return {
-    isValid: validationErrorMessage == '',
-    message:
-      validationErrorMessage !== ''
-        ? `'${field}' ${validationErrorMessage}`
-        : '',
+    isValid: validationErr == '',
+    validationErr: validationErr !== '' ? `'${field}' ${validationErr}` : '',
   }
 }

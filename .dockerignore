@@ -27,7 +27,7 @@
 LICENSE
 README.md
 .husky
-.archives
 .env.local
 .github
 Makefile
+engineering-notes

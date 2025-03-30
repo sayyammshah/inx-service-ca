@@ -1,8 +1,10 @@
 import { UserAuthFields } from '@core/common/constants.js'
 import { validationResult } from '@core/common/types.js'
-import { entityValidator } from '@core/common/validations.js'
+import { validator } from '@core/common/validations.js'
 import { UserDto } from 'core/business/dto/entityDto.js'
-import { Rules } from 'core/business/rulesEngine/User.core.js'
+import { UserSchema } from 'core/business/rulesEngine/User.core.js'
+import { flatten } from '@core/common/utils.js'
+import { validateRequiredFields } from '@core/common/validations.js'
 
 export class User {
   // Immutable
@@ -47,26 +49,38 @@ export class User {
 
   static validate(user: UserDto, isAuth: boolean = false): validationResult {
     let message = ''
+    const toValidate = flatten(user)
+    let fieldsRequired = UserSchema.requiredFields
 
-    for (const field in user) {
+    if (isAuth) {
+      fieldsRequired = fieldsRequired.filter((field) =>
+        UserAuthFields.includes(field),
+      )
+    }
+
+    message = validateRequiredFields(toValidate, fieldsRequired)
+    if (message) {
+      return {
+        isValid: false,
+        validationErr: message,
+      }
+    }
+
+    for (const field in toValidate) {
       if (isAuth && !UserAuthFields.includes(field)) continue
 
-      const value = user[field as keyof UserDto]
-      const validations = Rules.fields[field].validations
-      const { isValid, message: validationMsg } = entityValidator(
-        field,
-        value,
-        validations,
-      )
+      const value = toValidate[field as keyof UserDto]
+      const validations = UserSchema.fields[field].validations
+      const { isValid, validationErr } = validator(field, value, validations)
       if (!isValid) {
-        message = validationMsg
+        message = validationErr
         break
       }
     }
 
     return {
       isValid: !message,
-      message: message,
+      validationErr: message,
     }
   }
 }

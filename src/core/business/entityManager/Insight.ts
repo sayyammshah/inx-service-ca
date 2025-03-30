@@ -1,9 +1,18 @@
 import { validationResult } from '@core/common/types.js'
 import { InsightDto } from '../dto/entityDto.js'
-import { RulesInsight } from '../rulesEngine/Insight.core.js'
-import { entityValidator } from '@core/common/validations.js'
-import { MODULE_NAME, RuleKeysInsights } from '@core/common/constants.js'
-import { Calculate, Operations } from '@core/common/utils.js'
+import { validateRequiredFields, validator } from '@core/common/validations.js'
+import { execOperations, flatten } from '@core/common/utils.js'
+import { InsightsSchema } from '../rulesEngine/Insight.core.js'
+import { MODULE_NAME, RuleSetKeys } from '@core/common/constants.js'
+
+type Stats =
+  | {
+      likes: number
+      dislikes: number
+      views: number
+      comments: number
+    }
+  | Record<string, number>
 
 export class Insights {
   // Immutable Properties
@@ -14,14 +23,7 @@ export class Insights {
   // Mutable Properties
   title: string
   content: string
-  stats:
-    | {
-        likes: number
-        dislikes: number
-        views: number
-        comments: number
-      }
-    | Record<string, number>
+  stats: Stats
   updatedAt: number
   tags: string[]
 
@@ -38,7 +40,7 @@ export class Insights {
     title: string
     content: string
     tags?: string[] | []
-    stats?: Record<string, number> | null
+    stats?: Stats | null
   }) {
     this.insightId = insightId
     this.authorId = authorId
@@ -51,55 +53,37 @@ export class Insights {
       views: 0,
       comments: 0,
     }
-    this.createdAt = this.updatedAt = new Date().getTime()
-  }
-
-  // Helper Functions
-  private static _execCondition(
-    condition: {
-      operator: string
-      operands: Array<unknown>
-    },
-    insight: InsightDto,
-  ): boolean {
-    let result = false
-    const { operator, operands } = condition
-    const args = operands.map((operand) => {
-      let value =
-        typeof operand === 'string'
-          ? insight[operand as keyof InsightDto]
-          : operand
-
-      if (operand === 'createdAt')
-        value = Calculate()['convertDateInMinutes']([value as number])
-
-      return value
-    })
-    result = Operations()[operator](args)
-    return result
+    this.createdAt = new Date().getTime()
+    this.updatedAt = this.createdAt
   }
 
   static validate(insight: InsightDto): validationResult {
     let message = ''
+    const toValidate = flatten(insight)
 
-    for (const field in insight) {
-      const value = insight[field as keyof InsightDto]
-      const validations = RulesInsight.fields[field]?.validations
+    message = validateRequiredFields(toValidate, InsightsSchema.requiredFields)
+    if (message) {
+      return {
+        isValid: false,
+        validationErr: message,
+      }
+    }
 
-      const { isValid, message: validationMsg } = entityValidator(
-        field,
-        value,
-        validations,
-      )
+    for (const field in toValidate) {
+      const value = toValidate[field as keyof InsightDto]
+      const validations = InsightsSchema.fields[field]?.validations
+
+      const { isValid, validationErr } = validator(field, value, validations)
+
       if (!isValid) {
-        message = validationMsg
+        message = validationErr
         break
       }
     }
 
     return {
       isValid: !message,
-      message: message,
+      validationErr: message,
     }
   }
 
@@ -112,37 +96,35 @@ export class Insights {
   static canEdit(insight: InsightDto): validationResult {
     let message = ''
 
-    if (!RulesInsight.core)
+    if (!InsightsSchema.ruleSet)
       return {
         isValid: false,
-        message: `${MODULE_NAME}: core rules for insights are undefined`,
+        validationErr: `${MODULE_NAME}: core rules for insights are undefined`,
       }
 
-    const { initialCase, cases } = RulesInsight.core[RuleKeysInsights.CanEdit]
+    const { initialCase, cases } =
+      InsightsSchema.ruleSet[RuleSetKeys.Insights_CanEdit]
 
     const executeCase = (currentCase: string | null) => {
       if (!currentCase) return
 
-      const { ifCondition, thenCondition, failureMessage, nextCase } =
-        cases[currentCase]
+      const { check, action, errorTxt, nextCase } = cases[currentCase]
 
-      const result = Insights._execCondition(ifCondition, insight)
-      if (result && !thenCondition) return
-      if (result && thenCondition) {
-        message = Insights._execCondition(thenCondition, insight)
-          ? ''
-          : failureMessage
+      const result = execOperations(check, insight)
+      if (result && !action) return
+      if (result && action) {
+        message = execOperations(action, insight) ? '' : errorTxt
         return
       }
       if (nextCase) return executeCase(nextCase)
-      message = failureMessage
+      message = errorTxt
       return
     }
     executeCase(initialCase)
 
     return {
       isValid: !message,
-      message: message,
+      validationErr: message,
     }
   }
 }

@@ -1,59 +1,45 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1 # syntax version
 
-ARG NODE_VERSION=23.6.1
+# Multi stage build
+
+# Variables
 ARG PNPM_VERSION=10.4.1
 
-# Use node image for base image for all stages.
-FROM node:${NODE_VERSION}-alpine as base
+# Stage 1: Setup
+FROM node:alpine3.21 AS base
 
-# Set working directory for all build stages.
-WORKDIR /usr/src/app
+WORKDIR /app/inx/
 
-# Install pnpm.
-RUN --mount=type=cache,target=/root/.npm \
-    npm install -g pnpm@${PNPM_VERSION}
+ENV DB_CONNECTION_URL="mongodb://admin:adminInxPass@inx-srvc-database:27017/?authSource=admin"
+ENV DB_NAME=insightxCaLocal
+ENV PORT=3001
 
-# Create a stage for installing production dependecies.
-FROM base as deps
+RUN --mount=type=cache,target=/root/.npm
 
-# Copy package.json and pnpm-lock.yaml to the working directory.
+RUN npm install -g pnpm@${PNPM_VERSION}
+
+# Stage 2: Setup Prod Deps
+FROM base AS dependencies
+
 COPY package.json pnpm-lock.yaml ./
 
-# Install production dependencies.
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --prod
 
-# Create a stage for building the application.
-FROM base as build
+# Stage 3: Build stage 
+FROM base AS build
 
-# Copy package.json and pnpm-lock.yaml to the working directory.
-COPY package.json pnpm-lock.yaml ./
-
-# Install all dependencies.
-RUN pnpm install --frozen-lockfile
-
-# Copy the rest of the source files into the image.
 COPY . .
-# Run the build script.
+
+RUN pnpm install
+
 RUN pnpm run build
 
-# Create a new stage to run the application with minimal runtime dependencies
-# where the necessary files are copied from the build stage.
-FROM base as final
+# Stage 4: final
+FROM base AS final
 
-# Run the application as a non-root user.
-USER node
-
-# Copy package.json so that package manager commands can be used.
 COPY package.json .
 
-# Copy the production dependencies from the deps stage and also
-# the built application from the build stage into the image.
-COPY --from=deps /usr/src/app/node_modules ./node_modules
-COPY --from=build /usr/src/app/dist ./dist
+COPY --from=dependencies /app/inx/node_modules ./node_modules
+COPY --from=build /app/inx/dist ./dist
 
-
-# Expose the port that the application listens on.
-EXPOSE 3001
-
-# Run the application.
-CMD pnpm start
+CMD ["pnpm", "run", "start"]

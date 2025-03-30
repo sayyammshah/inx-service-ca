@@ -1,8 +1,4 @@
 export const MODULE_NAME = 'M_CORE'
-export const ID_PATTERN = {
-  genIdRegex: (length: number = 31): RegExp =>
-    new RegExp(`^[0-9a-zA-Z]{${length}}$`),
-}
 
 export const TIME_CONVERSIONS = {
   // SECONDS: 1000,
@@ -36,6 +32,7 @@ export enum ValidationErrors {
   LENGTH_MIN = 'expected minimum length is',
   LENGTH_MAX = 'expected maximum length is',
   FORMAT = 'has invalid format',
+  LENGTH = 'expected length is',
 }
 export enum CoreUserErrorMsg {
   USER_EXISTS = 'Account already exists.',
@@ -71,9 +68,7 @@ export const AppResStatusCodes = {
 
 export const UserAuthFields = ['email', 'password']
 
-export enum RuleKeysInsights {
-  CanEdit = 'CAN_EDIT',
-}
-export enum RuleKeysThreads {
-  ValidateHierarchy = 'VALIDATE_HIERARCHY',
+export const RuleSetKeys = {
+  Insights_CanEdit: 'CAN_EDIT',
+  Threads_HierarchyValidation: 'VALIDATE_HIERARCHY',
 }

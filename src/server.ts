@@ -12,6 +12,8 @@ import { ApiResponse, AppError } from 'shared/apiResponseCls.js'
 const PORT = process.env.PORT || 3001
 const app = express()
 
+// Middlewares
+
 app.use(
   express.json({
     limit: '50mb',
@@ -52,12 +54,7 @@ app.use(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (err: Error | AppError, req: Request, res: Response, next: NextFunction) => {
     const errObject = AppError.generateGlobalErrorObject(err)
-    res.status(errObject.status).json(
-      new ApiResponse(errObject.status, null, {
-        cause: errObject.cause,
-        stack: errObject.stack ?? '',
-      }),
-    )
+    res.status(errObject.status).json(new ApiResponse(null, errObject))
   },
 )
 

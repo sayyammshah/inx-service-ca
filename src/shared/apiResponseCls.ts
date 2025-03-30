@@ -2,24 +2,22 @@ import { ResponseStatusCodes } from './constants.js'
 
 export class ApiResponse {
   status: number = ResponseStatusCodes.OK
-  data: unknown = null
+  data: unknown | null = null
   error: Record<string, unknown> | string | null = null
 
   constructor(
-    status: number,
-    data?: unknown,
-    error?: Record<string, unknown> | string,
+    data?: unknown | null,
+    error?: Record<string, unknown> | string | null,
   ) {
-    const retData = data
-      ? Object.fromEntries(
-          Object.entries(data as Record<string, unknown>).filter(
-            (item) => item[0] !== 'status',
-          ),
-        )
-      : data
-
-    this.status = status
-    this.data = retData ?? null
+    if (data && typeof data === 'object' && 'status' in data) {
+      const result = { ...data } // Required to create other object as 'status' will be deleted from 'result' data object
+      this.status = (data?.status as number) ?? ResponseStatusCodes.OK
+      delete result.status
+      this.data = result ?? null
+    } else {
+      this.status = ResponseStatusCodes.OK
+      this.data = data ?? null
+    }
     this.error = error ?? null
   }
 }

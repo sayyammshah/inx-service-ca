@@ -4,12 +4,12 @@ import {
   UpdateInsightActions,
 } from '@bindings/common/constants.js'
 import { ControllerResponse, RequestContext } from '@bindings/common/types.js'
+import { genStack } from '@bindings/common/utils.js'
 import { InsightDataAdapter } from '@bindings/mongo-database'
 import { CreateNewInsight, FetchInsightPost } from '@core/app'
 import { generateInsightDto, InsightDto } from '@core/business'
 import { CoreAppResponse } from '@core/common/coreAppResponse.js'
 import { UpdateInsightPost } from 'core/applications/insight.app.js'
-import { fileURLToPath } from 'node:url'
 import { AppError } from 'shared/apiResponseCls.js'
 import { ResponseStatusCodes } from 'shared/constants.js'
 import { logger } from 'shared/logger.js'
@@ -26,9 +26,9 @@ import { logger } from 'shared/logger.js'
  */
 export const CreateInsight = async (
   body: Record<string, unknown>,
-  requestContext: RequestContext,
+  { requestId }: RequestContext,
 ): Promise<CoreAppResponse> => {
-  logger.info(requestContext, `${CreateInsight.name} controller called`)
+  logger.info(`${requestId}: ${CreateInsight.name} controller called`)
 
   let response: ControllerResponse | null = null
 
@@ -36,13 +36,15 @@ export const CreateInsight = async (
     const appError = new AppError(
       ResponseStatusCodes.BAD_REQUEST,
       InsightErrorMessage.INVALID_PARAMS,
-      `${fileURLToPath(import.meta.url)} ${CreateInsight.name}`,
+      `${genStack(import.meta.url)} = ${CreateInsight.name}()`,
     )
     throw appError
   }
 
   // Call core module
-  logger.info(requestContext, `preparing payload DTO`)
+  logger.info(
+    `${requestId}: Core module process initiated - ${CreateNewInsight.name}()`,
+  )
   const payload: InsightDto = generateInsightDto(body)
   const result: CoreAppResponse = await CreateNewInsight(
     {
@@ -55,16 +57,16 @@ export const CreateInsight = async (
     const errMsg = new AppError(
       result.status ?? ResponseStatusCodes.INTERNAL_SERVER_ERROR,
       `${InsightErrorMessage.FAILED_TO_CREATE_INSIGHT}${result.message}`,
-      `${fileURLToPath(import.meta.url)} ${CreateInsight.name}`,
+      `${genStack(import.meta.url)} ${CreateInsight.name}`,
     )
     throw errMsg
   }
 
+  logger.info(`${requestId}: Insight created successfully`)
+
   response = {
     ...result,
   }
-
-  logger.info(requestContext, `Insight created successfully`)
   return response
 }
 
@@ -77,14 +79,17 @@ export const CreateInsight = async (
  * @throws {AppError} If the response status is not OK, an error is thrown with the appropriate message and status code.
  */
 export const FetchInsights = async (
-  requestContext: RequestContext,
+  { requestId }: RequestContext,
   queryParams?: Record<string, string>,
 ): Promise<CoreAppResponse> => {
-  logger.info(requestContext, `${CreateInsight.name} controller called`)
+  logger.info(`${requestId}: ${CreateInsight.name} controller called`)
 
   let response: ControllerResponse | null = null
 
   // Call core module
+  logger.info(
+    `${requestId}: Core module process initiated - ${FetchInsightPost.name}()`,
+  )
   const result: CoreAppResponse = await FetchInsightPost(
     {
       InsightDataAdapter: new InsightDataAdapter(),
@@ -97,16 +102,16 @@ export const FetchInsights = async (
     const errMsg = new AppError(
       result.status ?? ResponseStatusCodes.INTERNAL_SERVER_ERROR,
       `${InsightErrorMessage.NO_RECORDS}${result.message}`,
-      `${fileURLToPath(import.meta.url)} ${FetchInsights.name}`,
+      `${genStack(import.meta.url)} - ${FetchInsights.name}()`,
     )
     throw errMsg
   }
 
+  logger.info(`${requestId}: Insight fetched successfully`)
+
   response = {
     ...result,
   }
-
-  logger.info(requestContext, `Insight fetched successfully`)
   return response
 }
 
@@ -129,9 +134,9 @@ export const UpdateInsight = async (
     document: Record<string, unknown>
     action?: UpdateInsightActions
   },
-  requestContext: RequestContext,
+  { requestId }: RequestContext,
 ) => {
-  logger.info(requestContext, `${UpdateInsight.name} controller called`)
+  logger.info(`${requestId}: ${UpdateInsight.name} controller called`)
 
   let response: ControllerResponse | null = null
 
@@ -139,7 +144,7 @@ export const UpdateInsight = async (
     const appError = new AppError(
       ResponseStatusCodes.BAD_REQUEST,
       InsightErrorMessage.INVALID_PARAMS,
-      `${fileURLToPath(import.meta.url)} ${UpdateInsight.name}`,
+      `${genStack(import.meta.url)} - ${UpdateInsight.name}()`,
     )
     throw appError
   }
@@ -152,6 +157,9 @@ export const UpdateInsight = async (
   else documentToUpdate = { $set: document }
 
   // Call core module
+  logger.info(
+    `${requestId}: Core module process initiated - ${UpdateInsight.name}()`,
+  )
   const result: CoreAppResponse = await UpdateInsightPost(
     {
       InsightDataAdapter: new InsightDataAdapter(),
@@ -167,15 +175,15 @@ export const UpdateInsight = async (
     const errMsg = new AppError(
       result.status ?? ResponseStatusCodes.INTERNAL_SERVER_ERROR,
       `${InsightErrorMessage.NO_RECORDS}${result.message}`,
-      `${fileURLToPath(import.meta.url)} ${FetchInsights.name}`,
+      `${genStack(import.meta.url)} ${FetchInsights.name}`,
     )
     throw errMsg
   }
 
+  logger.info(`${requestId}: Insight fetched successfully`)
+
   response = {
     ...result,
   }
-
-  logger.info(requestContext, `Insight fetched successfully`)
   return response
 }

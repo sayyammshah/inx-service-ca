@@ -1,35 +1,40 @@
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Docker Compose reference guide at
-# https://docs.docker.com/go/compose-spec-reference/
-
-# Here the instructions define your application as a service called "server".
-# This service is built from the Dockerfile in the current directory.
-# You can add other services your application may depend on here, such as a
-# database or a cache. For examples, see the Awesome Compose repository:
-# https://github.com/docker/awesome-compose
 services:
-  server:
+  # inx application configuration
+  inx-srvc:
     build:
       context: .
-    environment:
-      NODE_ENV: production
-    ports:
-      - 3001:3001
+      dockerfile: Dockerfile
+    image: inx-srvc:${INX_IMAGE_TAG}
+    container_name: inx-srvc-server
+    depends_on:
+      inx-srvc-database:
+        condition: service_healthy
+        restart: true
     env_file:
       - .env
-    # command: env
-    depends_on:
-      - mongo
-  mongo:
-    image: mongodb/mongodb-community-server:latest
-    # restart: always
+    ports:
+      - 3001:3001
+
+  # database service setup
+  inx-srvc-database:
+    image: mongodb/mongodb-community-server:5.0.27-ubi8
+    container_name: inx-srvc-database
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=adminInxPass
+      - MONGO_INITDB_DATABASE=insightxCaLocal
     volumes:
-      - mongo-data:/data/db
-    command: mongod --quiet # Hides snapshots logs in console
-    # healthcheck:
-    #   test: ['CMD', 'mongo', '--eval', "db.adminCommand('ping')"]
-    #   interval: 10s
-    #   timeout: 5s
-    #   retries: 5
+      - inx-srvc-storage:/data/db
+    ports:
+      - 27017:27017
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh mongodb://admin:adminInxPass@localhost:27017/admin --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+# Create volume
 volumes:
-  mongo-data:
+  inx-srvc-storage:
+    name: inx-srvc-storage

@@ -1,9 +1,10 @@
 import { validationResult } from '@core/common/types.js'
 import { ThreadsDto } from '../dto/entityDto.js'
-import { RulesThread } from '../rulesEngine/Threads.core.js'
-import { entityValidator } from '@core/common/validations.js'
-import { MODULE_NAME, RuleKeysThreads } from '@core/common/constants.js'
-import { Operations } from '@core/common/utils.js'
+import { ThreadsSchema } from '../rulesEngine/Threads.core.js'
+import { validator, validateRequiredFields } from '@core/common/validations.js'
+import { execOperations } from '@core/common/utils.js'
+import { flatten } from '@core/common/utils.js'
+import { MODULE_NAME, RuleSetKeys } from '@core/common/constants.js'
 
 export class Threads {
   insightId: string
@@ -41,31 +42,23 @@ export class Threads {
     this.createdAt = this.updatedAt = new Date().getTime()
   }
 
-  // Helper Functions
-  private static _execCondition(
-    condition: { operator: string; operands: Array<unknown> },
-    thread: ThreadsDto,
-  ): boolean {
-    let result = false
-    const { operator, operands } = condition
-
-    const args = operands.map((operand) =>
-      typeof operand === 'string'
-        ? thread[operand as keyof ThreadsDto]
-        : operand,
-    )
-    result = Operations()[operator](args)
-    return result
-  }
-
   static validate(thread: ThreadsDto): validationResult {
     let message = ''
+    const toValidate = flatten(thread)
 
-    for (const field in thread) {
-      const value = thread[field as keyof ThreadsDto]
-      const validations = RulesThread.fields[field]?.validations
+    message = validateRequiredFields(toValidate, ThreadsSchema.requiredFields)
+    if (message) {
+      return {
+        isValid: false,
+        validationErr: message,
+      }
+    }
 
-      const { isValid, message: validationMsg } = entityValidator(
+    for (const field in toValidate) {
+      const value = toValidate[field as keyof ThreadsDto]
+      const validations = ThreadsSchema.fields[field]?.validations
+
+      const { isValid, validationErr: validationMsg } = validator(
         field,
         value,
         validations,
@@ -78,45 +71,42 @@ export class Threads {
 
     return {
       isValid: !message,
-      message: message,
+      validationErr: message,
     }
   }
 
   static validateHierarchy(thread: ThreadsDto): validationResult {
     let message = ''
 
-    if (!RulesThread.core)
+    if (!ThreadsSchema.ruleSet)
       return {
         isValid: false,
-        message: `${MODULE_NAME}: core rules for threads are undefined`,
+        validationErr: `${MODULE_NAME}: Threads: Validation ruleSet not defined`,
       }
 
     const { initialCase, cases } =
-      RulesThread.core[RuleKeysThreads.ValidateHierarchy]
+      ThreadsSchema.ruleSet[RuleSetKeys.Threads_HierarchyValidation]
 
     const executeCase = (currentCase: string | null) => {
       if (!currentCase) return
 
-      const { ifCondition, thenCondition, failureMessage, nextCase } =
-        cases[currentCase]
+      const { check, action, errorTxt, nextCase } = cases[currentCase]
 
-      const result = Threads._execCondition(ifCondition, thread)
-      if (result && !thenCondition) return
-      if (result && thenCondition) {
-        message = Threads._execCondition(thenCondition, thread)
-          ? ''
-          : failureMessage
+      const result = execOperations(check, thread)
+      if (result && !action) return
+      if (result && action) {
+        message = execOperations(action, thread) ? '' : errorTxt
         return
       }
       if (nextCase) return executeCase(nextCase)
-      message = failureMessage
+      message = errorTxt
       return
     }
     executeCase(initialCase)
 
     return {
       isValid: !message,
-      message: message,
+      validationErr: message,
     }
   }
 }

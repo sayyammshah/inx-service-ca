@@ -28,11 +28,11 @@ export const CreateUserAccount = async (
   const { UserDataAdapter } = adapters
   const response = new CoreAppResponse()
 
-  const { isValid, message } = User.validate(payload)
+  const { isValid, validationErr } = User.validate(payload)
   if (!isValid)
     throw new CoreAppError(
       AppResStatusCodes.BAD_REQUEST,
-      `${MODULE_NAME}: Invalid User Object Provided: ${message}`,
+      `${MODULE_NAME}: Invalid User Object Provided: ${validationErr}`,
     )
 
   const filter = {
@@ -73,11 +73,11 @@ export const AuthenticateUserAccount = async (
   const { UserDataAdapter } = adapters
   const response = new CoreAppResponse()
 
-  const { isValid, message } = User.validate(payload, true)
+  const { isValid, validationErr } = User.validate(payload, true)
   if (!isValid)
     throw new CoreAppError(
       AppResStatusCodes.BAD_REQUEST,
-      `${MODULE_NAME}: Invalid User Object Provided: ${message}`,
+      `${MODULE_NAME}: Invalid User Object Provided: ${validationErr}`,
     )
 
   const { projection = {} } = options || {}

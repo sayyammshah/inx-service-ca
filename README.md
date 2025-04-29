@@ -95,11 +95,11 @@ Note:
 
 - _This is a self-driven project to explore techonologies and understand the different phases of software development._
 
-Archives:
+Engineering Notes:
 
-- [Pre-Production](/archives/pre-production/)
-- [Production](/archives/production/)
-- [Post-Production](/archives/post-production/)
+- [Pre-Production](engineering-notes/pre-production/)
+- [Production](engineering-notes/production/)
+- [Post-Production](engineering-notes/post-production/)
 
 Resources:
 

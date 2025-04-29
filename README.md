@@ -103,7 +103,7 @@ Engineering Notes:
 
 Resources:
 
-- Container image for this project is available [here.]([https://github.com/sayyammshah/inx-service-ca/pkgs/container/inx-service-ca])
+- Container image for this project is available [here.](https://github.com/sayyammshah/inx-service-ca/pkgs/container/inx-service-ca)
 - Docker-compose file is available [here.](https://gist.github.com/e886139cda30a9bc66051dbaef505030.git)
 - View collection [here.](https://www.postman.com/red-trinity-198591/api-box/collection/zupxh38/inx-service-ca)
 

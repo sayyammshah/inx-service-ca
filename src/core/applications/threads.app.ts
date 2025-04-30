@@ -42,7 +42,10 @@ export const CreateNewThread = async (
   const newThread = new Threads(threadObj)
 
   // Store it in DB
-  response.queryResponse = await ThreadDataAdapter.create(newThread)
+  response.queryResponse = await ThreadDataAdapter.create(
+    newThread,
+    newThread.depth == 0,
+  )
   response.uid = threadId
   response.status = AppResStatusCodes.CREATED
 

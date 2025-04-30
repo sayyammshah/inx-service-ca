@@ -38,8 +38,11 @@ export function isValidType<T = string>(value: T, type: string): string {
 export const isValidSize = (value: unknown, size: string): string => {
   if (!value || !size) return ''
 
-  if (isArray(value) && (value as Array<unknown>).length > parseInt(size))
-    return `${ValidationErrors.LENGTH_MAX} ${size}`
+  if (isArray(value)) {
+    return (value as Array<unknown>).length > parseInt(size)
+      ? `${ValidationErrors.LENGTH_MAX} ${size}`
+      : ''
+  }
 
   const [min, max] = size.split('-').map((val) => parseInt(val))
   if ((value as string).length < min)

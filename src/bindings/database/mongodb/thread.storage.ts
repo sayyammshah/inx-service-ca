@@ -6,7 +6,7 @@ import { logger } from 'shared/logger.js'
 import { Threads } from '@core/business'
 
 export class ThreadDataAdapter implements ThreadDataInterface {
-  private collectionName = DATABASE_CONSTANTS.COLLECTIONS.THREADS
+  private _collectionName = DATABASE_CONSTANTS.COLLECTIONS.THREADS
   private client: Db | null = null
 
   private async getClient(): Promise<Db> {
@@ -16,13 +16,32 @@ export class ThreadDataAdapter implements ThreadDataInterface {
     return await MongoDBClient.getInstance()
   }
 
-  async create(document: Threads): Promise<unknown> {
+  async create(
+    document: Threads,
+    isTopLevelComment: boolean,
+  ): Promise<unknown> {
     try {
       if (!this.client) this.client = await this.getClient()
 
-      const response = await this.client
-        .collection(this.collectionName)
+      let insertPromObj = null
+      let updatePromObj = null
+
+      if (isTopLevelComment) {
+        updatePromObj = this.client
+          ?.collection(DATABASE_CONSTANTS.COLLECTIONS.INSIGHTS)
+          .updateOne(
+            { insightId: document.insightId },
+            {
+              $inc: { 'stats.comments': 1 },
+            },
+          )
+      }
+
+      insertPromObj = this.client
+        ?.collection(this._collectionName)
         .insertOne(document)
+
+      const response = await Promise.all([insertPromObj, updatePromObj])
 
       return response
     } catch (error) {

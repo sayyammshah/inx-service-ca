@@ -8,14 +8,14 @@ export const InsightsSchema: EntitySchema = {
       description: 'Hex ID that uniquely identifies the post',
       validations: {
         type: 'string',
-        size: '31-31',
+        size: '32-32',
       },
     },
     authorId: {
       description: 'Reference to the `userId` from the Users model.',
       validations: {
         type: 'string',
-        size: '31-31',
+        size: '32-32',
       },
     },
     title: {

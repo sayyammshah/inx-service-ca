@@ -8,7 +8,7 @@ export const UserSchema: EntitySchema = {
       description: "Hex ID that uniquely identifies the user's document",
       validations: {
         type: 'string',
-        size: '31-31',
+        size: '32-32',
       },
     },
     name: {

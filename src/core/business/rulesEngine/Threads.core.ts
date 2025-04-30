@@ -8,35 +8,35 @@ export const ThreadsSchema: EntitySchema = {
       description: 'Hex ID that uniquely identifies the post',
       validations: {
         type: 'string',
-        size: '31-31',
+        size: '32-32',
       },
     },
     authorId: {
       description: 'Reference to the `userId` from the Users model.',
       validations: {
         type: 'string',
-        size: '31-31',
+        size: '32-32',
       },
     },
     threadId: {
       description: 'Hex ID that uniquely identifies the thread',
       validations: {
         type: 'string',
-        size: '31-31',
+        size: '32-32',
       },
     },
     parentThread: {
       description: 'Hex ID that uniquely identifies the parent of thread',
       validations: {
         type: 'string',
-        size: '31-31',
+        size: '32-32',
       },
     },
     rootThread: {
       description: 'Hex ID that uniquely identifies the root thread',
       validations: {
         type: 'string',
-        size: '31-31',
+        size: '32-32',
       },
     },
     path: {

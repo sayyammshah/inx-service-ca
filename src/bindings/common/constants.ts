@@ -1,3 +1,5 @@
+import { Database_Helper } from 'core/shared/constants.js'
+
 // Token Constants
 export const TOKEN = {
   ALGORITHM: 'sha256',
@@ -32,15 +34,12 @@ export enum ThreadsErrorMessage {
   FAILED_TO_CREATE_THREAD = 'Failed to create Thread: ',
 }
 
-// Database Helpers
-enum CollectionNames {
-  USER = 'InxUsers',
-  INSIGHTS = 'InxInsights',
-  THREADS = 'inxThreads',
-}
-
 export const DATABASE_CONSTANTS = {
-  COLLECTIONS: CollectionNames,
+  COLLECTIONS: {
+    USERS: Database_Helper.Collections.Users,
+    INSIGHTS: Database_Helper.Collections.Insights,
+    THREADS: Database_Helper.Collections.Threads,
+  },
   PROJECTIONS: {
     USER: {
       _id: 0,
@@ -52,12 +51,8 @@ export const DATABASE_CONSTANTS = {
       _id: 0,
     },
   },
-  AGGR: {
-    THREADS_LOOKUP: {
-      LOCAL_FIELD: 'insightId',
-      FOREIGN_FIELD: 'insightId',
-      AS: 'threads',
-    },
+  OPERATIONS: {
+    inc: '$inc',
   },
 }
 

@@ -1,6 +1,7 @@
 import {
   InsightDataInterface,
   UserDataInterface,
+  ThreadDataInterface,
 } from '@core/storage-interface'
 
 export type RuleSetChecks = {

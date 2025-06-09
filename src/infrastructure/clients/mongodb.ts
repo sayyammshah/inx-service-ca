@@ -1,5 +1,5 @@
 import { Db, MongoClient } from 'mongodb'
-import { logger } from 'shared/logger.js'
+import { logger } from '@shared/logger'
 
 export class MongoDBClient {
   private static _client: MongoClient | null = null

@@ -1,1 +1,1 @@
-export { MongoDBClient } from 'infrastructure/clients/mongodb.js'
+export { MongoDBClient } from '../clients/mongodb'

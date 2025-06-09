@@ -1,40 +1,32 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "module": "NodeNext",
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
     "rootDir": "./src",
     "outDir": "./dist",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+
     "strict": true,
     "noImplicitAny": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
     "skipLibCheck": true,
-    "moduleResolution": "nodenext",
-    "resolveJsonModule": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+
     "baseUrl": "./src",
     "paths": {
-      // Core Module Alias
-      "@core/business": ["core/business/index.js"],
-      "@core/storage-interface": ["core/interfaces/storage/index.js"],
-      "@bindings/logger-interface": ["core/interfaces/logger/index.js"],
-      "@core/app": ["core/applications/index.js"],
-      "@core/common/*": ["core/common/*"],
+      "@core/shared": ["core/shared/index.ts"],
+      "@core/interface": ["core/interfaces/index.ts"],
+      "@core/apps": ["core/applications/index.ts"],
 
-      // Bindings Module Alias
-      "@bindings/mongo-database": ["bindings/database/mongodb/index.js"],
-      "@bindings/logger": ["bindings/logger/index.js"],
-      "@bindings/express-routes": ["bindings/routes/express/index.js"],
-      "@bindings/controllers": ["bindings/controllers/index.js"],
-      "@bindings/middleware": ["bindings/middleware/index.js"],
-      "@bindings/common/*": ["bindings/common/*"],
+      "@adapters/express-routers": ["adapters/routes/express/index.ts"],
 
-      // Infrastructure Module Alias
-      "@infra/clients": ["infrastructure/clients/index.js"],
-      "@infra/common/*": ["infrastructure/common/*"]
+      "@infrastructure/clients": ["infrastructure/clients/index.ts"],
+
+      "@shared/*": ["shared/*"]
     }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "**/*.test.ts"]
 }

@@ -1,16 +1,12 @@
 import express, { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
-import {
-  UserRouter,
-  InsightRouter,
-  ThreadRouter,
-} from '@bindings/express-routes'
-import { MongoDBClient } from '@infra/clients'
-import { httpLogger, logger } from 'shared/logger.js'
-import { ApiResponse, AppError } from 'shared/apiResponseCls.js'
+import { UserRouter } from '@adapters/express-routers'
+import { MongoDBClient } from '@infrastructure/clients'
+import { httpLogger, logger } from '@shared/logger'
+import { ApiResponse, AppError } from '@shared/apiResponseCls'
 
 const PORT = process.env.PORT || 3001
-const app = express()
+export const app = express()
 
 // Middlewares
 
@@ -31,7 +27,9 @@ app.use(
   }),
 )
 
-app.use(httpLogger)
+app.use((req: Request, res: Response, next: NextFunction) =>
+  httpLogger(req, res, next),
+)
 
 // ------------------------ Routes ------------------------
 
@@ -44,8 +42,8 @@ app.get('/health-check', (req, res) => {
 })
 
 app.use('/v1/api/user', UserRouter)
-app.use('/v1/api/inx', InsightRouter)
-app.use('/v1/api/thread', ThreadRouter)
+// app.use('/v1/api/inx', InsightRouter)
+// app.use('/v1/api/thread', ThreadRouter)
 
 // ------------------------ Routes ------------------------
 

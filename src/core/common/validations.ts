@@ -1,5 +1,6 @@
-import { ValidationErrors } from './constants.js'
-import { EntitySchema, validationResult } from './types.js'
+import { ValidationErrors } from './constants'
+import { ValidationResult } from './resultHandlers'
+import { EntityRules } from './types'
 
 // Helpers
 export const isArray = (value: unknown) =>
@@ -77,8 +78,8 @@ export function isValidListValue<T>(
 export const validator = <T>(
   field: string,
   value: T,
-  validations: EntitySchema['fields'][string]['validations'],
-): validationResult => {
+  validations: EntityRules['fields'][string]['validations'],
+): ValidationResult => {
   let validationErr: string | null = ''
 
   const { type, size, pattern, list } = validations
@@ -90,8 +91,8 @@ export const validator = <T>(
     (list && isValidListValue(value, list)) ||
     ''
 
-  return {
-    isValid: validationErr == '',
-    validationErr: validationErr !== '' ? `'${field}' ${validationErr}` : '',
-  }
+  return new ValidationResult(
+    validationErr == '',
+    validationErr !== '' ? `'${field}' ${validationErr}` : '',
+  )
 }

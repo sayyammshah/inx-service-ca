@@ -1,7 +1,7 @@
-import { User, UserDto } from '@core/business'
+import { UserEntity as UserDto } from '../../business/entities/entity'
 
-export interface UserDataInterface {
-  create(document: User): Promise<unknown>
+export default interface IUserStore {
+  create(document: UserDto): Promise<unknown>
   read(
     filter?: Partial<UserDto>,
     projection?: Record<string, number>,

@@ -1,20 +1,4 @@
-import {
-  InsightDataInterface,
-  UserDataInterface,
-  ThreadDataInterface,
-} from '@core/storage-interface'
-
-export type RuleSetChecks = {
-  operator: string
-  operands: Array<unknown>
-  calculate?: {
-    field: string
-    operation: string
-  }
-}
-export type RuleSetActions = RuleSetChecks | null
-
-export interface EntitySchema {
+export interface EntityRules {
   requiredFields: Array<string>
   fields: {
     [key: string]: {
@@ -46,12 +30,7 @@ export interface EntitySchema {
   }
 }
 
-export type validationResult = {
-  isValid: boolean
-  validationErr: string
-}
-
-export type GenSecretsReturnRes = {
+export type GenSecretsResult = {
   isValid: boolean
   message: string
   payload: unknown
@@ -61,17 +40,18 @@ export type GenSecretsReturnRes = {
 export type UserAdapters = {
   UserDataAdapter: UserDataInterface
 }
-export type InsightAdapters = {
-  InsightDataAdapter: InsightDataInterface
-}
-export type ThreadAdapters = {
-  ThreadDataAdapter: ThreadDataInterface
+
+// Response Type Definitions
+export interface IResultInst {
+  status: StatusCodes
+  uid: string
+  qryRes: unknown | null
+  msg: string
 }
 
-// Shared
-export interface CoreRequestContext {
-  method: RequestMethods
-  requestId: string // Unique identifier for tracking the request within this service
-  userAgent: string | undefined // parseIt
-  correlationId: string // Used for tracing requests across multiple microservices
+export interface IErrorInst {
+  status: StatusCodes
+  isErr: boolean
+  ref: string
+  msg?: string
 }

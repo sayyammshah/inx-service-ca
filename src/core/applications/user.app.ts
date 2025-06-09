@@ -1,12 +1,10 @@
-import { User, UserDto } from '@core/business'
-import { generateId, hashManager } from '@core/common/utils.js'
-import { UserAdapters } from '@core/common/types.js'
-import {
-  AppResStatusCodes,
-  CoreUserErrorMsg,
-  MODULE_NAME,
-} from '@core/common/constants.js'
-import { CoreAppError, CoreAppResponse } from '@core/common/coreAppResponse.js'
+import { StatusCodes, MODULE_NAME, UserErrMsg } from '../common/constants'
+import { ErrorInst, ResultInst } from '../common/resultHandlers'
+import { fileURLToPath } from 'node:url'
+import { UserEntity as UserDto } from '../business/entities/entity'
+import User from '../business/entities/user'
+import { generateId, hashManager } from '../common/utils'
+import { UserAdapters } from '../common/types'
 
 /**
  * Creates a new user account in the system.
@@ -21,18 +19,18 @@ import { CoreAppError, CoreAppResponse } from '@core/common/coreAppResponse.js'
  * @returns A promise that resolves to a CoreAppResponse object containing the user ID,
  *          the query response, a message, and a status code.
  */
-export const CreateUserAccount = async (
+export const CreateUser = async (
   adapters: UserAdapters,
   payload: UserDto,
-): Promise<CoreAppResponse> => {
+): Promise<ResultInst> => {
   const { UserDataAdapter } = adapters
-  const response = new CoreAppResponse()
+  const response = new ResultInst()
 
-  const { isValid, validationErr } = User.validate(payload)
+  const { isValid, err } = User.validate(payload)
   if (!isValid)
-    throw new CoreAppError(
-      AppResStatusCodes.BAD_REQUEST,
-      `${MODULE_NAME}: Invalid User Object Provided: ${validationErr}`,
+    throw new ErrorInst(
+      fileURLToPath(__filename),
+      `${MODULE_NAME}: Invalid user dto provided: ${err}`,
     )
 
   const filter = {
@@ -42,8 +40,8 @@ export const CreateUserAccount = async (
   const userAlreadyExists = await UserDataAdapter.read(filter)
 
   if (Array.isArray(userAlreadyExists) && userAlreadyExists.length > 0) {
-    response.status = AppResStatusCodes.CONFLICT
-    response.message = CoreUserErrorMsg.USER_EXISTS
+    response.status = StatusCodes.Conflict
+    response.msg = UserErrMsg.UserExists
     return response
   }
 
@@ -57,27 +55,27 @@ export const CreateUserAccount = async (
   })
 
   response.uid = userId
-  response.queryResponse = await UserDataAdapter.create(newUser)
-  response.status = AppResStatusCodes.CREATED
+  response.qryRes = await UserDataAdapter.create(newUser)
+  response.status = StatusCodes.Created
 
   return response
 }
 
-export const AuthenticateUserAccount = async (
+export const AuthenticateUser = async (
   adapters: UserAdapters,
   payload: UserDto,
   options?: {
     projection: Record<string, number>
   },
-): Promise<CoreAppResponse> => {
+): Promise<ResultInst> => {
   const { UserDataAdapter } = adapters
-  const response = new CoreAppResponse()
+  const response = new ResultInst()
 
-  const { isValid, validationErr } = User.validate(payload, true)
+  const { isValid, err } = User.validate(payload, true)
   if (!isValid)
-    throw new CoreAppError(
-      AppResStatusCodes.BAD_REQUEST,
-      `${MODULE_NAME}: Invalid User Object Provided: ${validationErr}`,
+    throw new ErrorInst(
+      fileURLToPath(__filename),
+      `${MODULE_NAME}: Invalid user dto provided: ${err}`,
     )
 
   const { projection = {} } = options || {}
@@ -89,8 +87,8 @@ export const AuthenticateUserAccount = async (
   const userData = await UserDataAdapter.read(filter, projection)
 
   if (Array.isArray(userData) && userData.length == 0) {
-    response.status = AppResStatusCodes.NOT_FOUND
-    response.message = CoreUserErrorMsg.USER_NOT_FOUND
+    response.status = StatusCodes.NotFound
+    response.msg = UserErrMsg.UserNotFound
     return response
   }
 
@@ -100,13 +98,13 @@ export const AuthenticateUserAccount = async (
     hashManager().verify(password, payload.password)
 
   if (!passwordIsValid) {
-    response.status = AppResStatusCodes.BAD_REQUEST
-    response.message = tokenValidationMessage
+    response.status = StatusCodes.BadRequest
+    response.msg = tokenValidationMessage
     return response
   }
 
   response.uid = userId
-  response.queryResponse = userData
+  response.qryRes = userData
 
   return response
 }

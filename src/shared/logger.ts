@@ -1,10 +1,11 @@
 import { LoggerOptions, pino } from 'pino'
 import { pinoHttp } from 'pino-http'
-import { ENVS } from 'shared/constants.js'
+import { ENVS } from './constants'
+import { NextFunction, Request, Response } from 'express'
 
-const isDevelopment = process.env.NODE_ENV === ENVS.DEV_LOCAL
-const isProd = process.env.NODE_ENV === ENVS.PROD
-// const isDevelopment = false
+const ifDevelopment = process.env.NODE_ENV === ENVS.DevLocal
+const ifProd = process.env.NODE_ENV === ENVS.Prod
+const ifTest = process.env.NODE_ENV === ENVS.Test
 
 const loggerOptions: LoggerOptions = {
   name: 'inx',
@@ -22,9 +23,9 @@ const loggerOptions: LoggerOptions = {
 }
 
 const logger = pino(
-  isDevelopment
+  ifDevelopment
     ? loggerOptions
-    : isProd
+    : ifProd
       ? {
           redact: {
             paths: ['response.data.token'],
@@ -34,6 +35,8 @@ const logger = pino(
       : {},
 )
 
-const httpLogger = pinoHttp({ logger })
+const httpLogger = ifTest
+  ? (req: Request, res: Response, next: NextFunction) => next()
+  : pinoHttp({ logger })
 
 export { logger, httpLogger }

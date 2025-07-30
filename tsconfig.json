@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "commonjs",
+    "module": "ESNext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "rootDir": "./src",
@@ -16,15 +16,10 @@
 
     "baseUrl": "./src",
     "paths": {
-      "@core/shared": ["core/shared/index.ts"],
-      "@core/interface": ["core/interfaces/index.ts"],
-      "@core/apps": ["core/applications/index.ts"],
-
-      "@adapters/express-routers": ["adapters/routes/express/index.ts"],
-
-      "@infrastructure/clients": ["infrastructure/clients/index.ts"],
-
-      "@shared/*": ["shared/*"]
+      "@core": ["core/index.ts"],
+      "@shared": ["shared/index.ts"],
+      "@adapters": ["adapters/index.ts"],
+      "@infra": ["infrastructure/index.ts"]
     }
   },
   "include": ["src/**/*.ts"],

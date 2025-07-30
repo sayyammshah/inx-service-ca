@@ -1,3 +1,5 @@
-import UserDataInterface from './storage/user.interface'
+import type { IUserDataStore } from './user.interface.js'
+import type { IInsightDataStore } from './insight.interface.js'
 
-export { UserDataInterface }
+export { IUserDataStore as UserDataInterface }
+export { IInsightDataStore as InsightDataInterface }

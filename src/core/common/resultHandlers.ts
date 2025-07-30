@@ -1,5 +1,5 @@
-import { StatusCodes } from './constants'
-import { IResultInst, IErrorInst } from './types'
+import { StatusCodes } from './constants.js'
+import { IResultInst, IErrorInst } from './types.js'
 
 export class ErrorInst implements IErrorInst {
   status: StatusCodes

@@ -1,7 +1,7 @@
+import { NextFunction, Request, Response } from 'express'
 import { LoggerOptions, pino } from 'pino'
 import { pinoHttp } from 'pino-http'
-import { ENVS } from './constants'
-import { NextFunction, Request, Response } from 'express'
+import { ENVS } from './constants.js'
 
 const ifDevelopment = process.env.NODE_ENV === ENVS.DevLocal
 const ifProd = process.env.NODE_ENV === ENVS.Prod

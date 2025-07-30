@@ -1,9 +1,8 @@
 import { Db, FindCursor, WithId } from 'mongodb'
-import { UserDataInterface } from '@core/interface'
-import { UserDto } from '@core/shared'
-import { MongoDBClient } from '@infrastructure/clients'
-import { logger } from '@shared/logger'
-import { DATABASE_CONSTANTS } from '../../common/constants'
+import { UserDataInterface, IUserDto } from '@core'
+import { MongoDBClient } from '@infra'
+import { logger } from '@shared'
+import { DATABASE_CONSTANTS } from '../common/constants.js'
 
 export default class UserDataStore implements UserDataInterface {
   private collectionName = DATABASE_CONSTANTS.COLLECTIONS.USERS
@@ -16,7 +15,7 @@ export default class UserDataStore implements UserDataInterface {
     return await MongoDBClient.getInstance()
   }
 
-  async create(document: UserDto): Promise<unknown> {
+  async create(document: IUserDto): Promise<unknown> {
     try {
       if (!this.client) this.client = await this.getClient()
 

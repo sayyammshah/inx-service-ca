@@ -1,4 +1,4 @@
-import { CoreStatusCodes } from '@core/shared'
+import { CoreStatusCodes } from '@core'
 
 export enum ENVS {
   DevLocal = 'dev-local',

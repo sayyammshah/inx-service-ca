@@ -1,9 +1,8 @@
 import express, { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
-import { UserRouter } from '@adapters/express-routers'
-import { MongoDBClient } from '@infrastructure/clients'
-import { httpLogger, logger } from '@shared/logger'
-import { ApiResponse, AppError } from '@shared/apiResponseCls'
+import { httpLogger, logger, ApiResponse, AppError } from '@shared'
+import { InsightRouter, UserRouter } from '@adapters'
+import { MongoDBClient } from '@infra'
 
 const PORT = process.env.PORT || 3001
 export const app = express()
@@ -27,9 +26,13 @@ app.use(
   }),
 )
 
-app.use((req: Request, res: Response, next: NextFunction) =>
-  httpLogger(req, res, next),
-)
+app.use((req: Request, res: Response, next: NextFunction) => {
+  try {
+    httpLogger(req, res, next)
+  } catch (error) {
+    logger.error(error)
+  }
+})
 
 // ------------------------ Routes ------------------------
 
@@ -42,7 +45,7 @@ app.get('/health-check', (req, res) => {
 })
 
 app.use('/v1/api/user', UserRouter)
-// app.use('/v1/api/inx', InsightRouter)
+app.use('/v1/api/inx', InsightRouter)
 // app.use('/v1/api/thread', ThreadRouter)
 
 // ------------------------ Routes ------------------------

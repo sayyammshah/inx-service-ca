@@ -1,5 +1,14 @@
 export const MODULE_NAME = 'CORE_MODULE'
 
+export const TIME_CONVERSIONS = {
+  // SECONDS: 1000,
+  // HOURS: 1000 * 60 * 60,
+  MINUTES: 1000 * 60,
+  // DAYS: 1000 * 60 * 60 * 24,
+  // WEEKS: 1000 * 60 * 60 * 24 * 7,
+  // MONTHS: 1000 * 60 * 60 * 24 * 7 * 4,
+}
+
 export enum Gender {
   Male = 'Male',
   Female = 'Female',
@@ -41,4 +50,9 @@ export const HASH = {
   ITERATIONS: 10000,
   KEY_LENGTH: 16,
   DELIMETER: '.',
+}
+
+export const RuleSetKeys = {
+  Insights_CanEdit: 'CAN_EDIT',
+  Threads_HierarchyValidation: 'VALIDATE_HIERARCHY',
 }

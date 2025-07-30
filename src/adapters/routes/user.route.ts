@@ -1,12 +1,8 @@
 import express, { NextFunction, Request, Response } from 'express'
-import { ApiResponse } from '@shared/apiResponseCls'
-import { logger } from '@shared/logger'
-import {
-  AuthenticateUserController,
-  CreateUserController,
-} from '../../controllers/index'
-import { ControllerResponse } from '../../common/types'
-import { getRequestContext } from '../../common/utils'
+import { ApiResponse, logger } from '@shared'
+import { AuthenticateUserController, CreateUserController } from '@adapters'
+import { ControllerResponse } from '../common/types.js'
+import { getRequestContext } from '../common/utils.js'
 
 const router = express.Router()
 

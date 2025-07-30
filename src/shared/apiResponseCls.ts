@@ -1,4 +1,4 @@
-import { ResponseStatusCodes } from './constants'
+import { ResponseStatusCodes } from './constants.js'
 
 export class ApiResponse {
   status: number = ResponseStatusCodes.Ok

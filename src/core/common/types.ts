@@ -1,3 +1,18 @@
+import { IInsightDataStore } from '../interfaces/insight.interface.js'
+import { IUserDataStore } from '../interfaces/user.interface.js'
+import { StatusCodes } from './constants.js'
+
+export type RuleSetChecks = {
+  operator: string
+  operands: Array<unknown>
+  calculate?: {
+    field: string
+    operation: string
+  }
+}
+
+export type RuleSetActions = RuleSetChecks | null
+
 export interface EntityRules {
   requiredFields: Array<string>
   fields: {
@@ -33,12 +48,15 @@ export interface EntityRules {
 export type GenSecretsResult = {
   isValid: boolean
   message: string
-  payload: unknown
+  payload: Record<string, unknown>
 }
 
 // Adapters
 export type UserAdapters = {
-  UserDataAdapter: UserDataInterface
+  UserDataAdapter: IUserDataStore
+}
+export type InsightAdapters = {
+  InsightDataAdapter: IInsightDataStore
 }
 
 // Response Type Definitions
@@ -48,7 +66,6 @@ export interface IResultInst {
   qryRes: unknown | null
   msg: string
 }
-
 export interface IErrorInst {
   status: StatusCodes
   isErr: boolean

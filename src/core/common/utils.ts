@@ -1,10 +1,10 @@
 import { pbkdf2Sync, randomBytes, randomUUID } from 'node:crypto'
-import { isObject } from './validations'
-import { HASH, UserErrMsg } from './constants'
-import { GenSecretsResult } from './types'
+import { isObject } from './validations.js'
+import { HASH, TIME_CONVERSIONS, UserErrMsg } from './constants.js'
+import { GenSecretsResult, RuleSetChecks } from './types.js'
 
-export const flatten = (
-  data: Record<string, unknown>,
+export const flatten = <T>(
+  data: T,
   prefix: string = '',
 ): Record<string, unknown> => {
   let result: Record<string, unknown> = {}
@@ -56,4 +56,43 @@ export const hashManager = () => {
   }
 
   return { generate, verify }
+}
+
+export const Calculate = (): {
+  [key: string]: (args: number[]) => number
+} => ({
+  divide: (args) => args[0] / args[1],
+  convertDateInMinutes: (args) =>
+    Math.floor((Date.now() - args[0]) / TIME_CONVERSIONS.MINUTES),
+})
+
+export const Operations = (): {
+  [key: string]: <T = number>(args: T[]) => boolean
+} => ({
+  greaterThan: (args) => args[0] > args[1],
+  lessThan: (args) => args[0] < args[1],
+  lessThanEqualsTo: (args) => args[0] <= args[1],
+  equalsTo: (args) => args[0] == args[1],
+  notEqualsTo: (args) => args[0] != args[1],
+  isUndefined: (args) => args.every((arg) => arg === undefined || arg === null),
+  isDefined: (args) => args.every((arg) => arg),
+})
+
+export function execOperations<T>(condition: RuleSetChecks, data: T): boolean {
+  const { operator, operands, calculate } = condition
+
+  if (calculate) {
+    const { field, operation } = calculate
+    const indexOfField = operands.indexOf(field)
+    const calcArgs = operands.map((operand) =>
+      typeof operand === 'string' ? data[operand as keyof T] : operand,
+    ) as number[]
+    const calculatedValue = Calculate()[operation](calcArgs)
+    operands[indexOfField] = calculatedValue
+  }
+
+  const args = operands.map((operand) =>
+    typeof operand === 'string' ? data[operand as keyof T] : operand,
+  )
+  return Operations()[operator](args)
 }

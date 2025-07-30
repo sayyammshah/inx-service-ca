@@ -1,6 +1,6 @@
-import { ValidationErrors } from './constants'
-import { ValidationResult } from './resultHandlers'
-import { EntityRules } from './types'
+import { ValidationErrors } from './constants.js'
+import { ValidationResult } from './resultHandlers.js'
+import { EntityRules } from './types.js'
 
 // Helpers
 export const isArray = (value: unknown) =>

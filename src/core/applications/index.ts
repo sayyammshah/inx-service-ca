@@ -1,6 +1,2 @@
-import { CreateUser, AuthenticateUser } from './user.app'
-
-export {
-  CreateUser as CreateUserAccount,
-  AuthenticateUser as AuthenticateUserAccount,
-}
+export * from './user.app.js'
+export * from './insight.app.js'

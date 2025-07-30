@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
-import { AppError } from '@shared/apiResponseCls'
-import { ResponseStatusCodes } from '@shared/constants'
-import { CommonErrorMsg } from '../common/constants'
-import { tokenManager } from '../common/utils'
+import { AppError, ResponseStatusCodes } from '@shared'
+import { CommonErrorMsg } from '../common/constants.js'
+import { tokenManager } from '../common/utils.js'
 
 const authenticateRequest = (
   req: Request,

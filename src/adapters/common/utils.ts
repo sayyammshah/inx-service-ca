@@ -2,18 +2,17 @@ import { createHmac, randomUUID } from 'node:crypto'
 import { IncomingHttpHeaders } from 'node:http'
 import { fileURLToPath } from 'node:url'
 import { Request } from 'express'
-import { UserDto } from '@core/shared'
-import { RequestMethods } from '@shared/constants'
-import { generateUUID } from '@shared/utils'
-import { TOKEN, UserErrorMsg } from '../common/constants'
-import { GenSecretsResult, RequestContext } from '../common/types'
+import { generateId, IUserDto } from '@core'
+import { RequestMethods } from '@shared'
+import { TOKEN, UserErrorMsg } from '../common/constants.js'
+import { GenSecretsResult, RequestContext } from '../common/types.js'
 
 export function getRequestContext(req: Request): RequestContext {
   const headers: IncomingHttpHeaders = req.headers
 
   const requestContext: RequestContext = {
     method: req.method as RequestMethods,
-    requestId: (headers['request-id'] ?? generateUUID()) as string,
+    requestId: (headers['request-id'] ?? generateId()) as string,
     userAgent: headers['user-agent'],
     correlationId: headers['x-Correlation-id'] as string, // optional
   }
@@ -22,7 +21,7 @@ export function getRequestContext(req: Request): RequestContext {
 }
 
 export const tokenManager = () => {
-  function generate(payloadToEncode: Partial<UserDto> & { userId: string }) {
+  function generate(payloadToEncode: Partial<IUserDto> & { userId: string }) {
     const tokenPayload = Buffer.from(JSON.stringify(payloadToEncode)).toString(
       'base64',
     )

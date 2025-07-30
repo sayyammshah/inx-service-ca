@@ -1,6 +1,6 @@
 import { IncomingHttpHeaders } from 'node:http'
-import { RequestMethods } from '@shared/constants.ts'
-import { CoreSecretsResult, ICoreResult } from '@core/shared'
+import { CoreSecretsResult, ICoreResult } from '@core'
+import { RequestMethods } from '../../shared/constants.js'
 
 export interface ControllerResponse extends ICoreResult {
   token?: string

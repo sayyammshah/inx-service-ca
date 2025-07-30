@@ -1,10 +1,9 @@
-import { StatusCodes, MODULE_NAME, UserErrMsg } from '../common/constants'
-import { ErrorInst, ResultInst } from '../common/resultHandlers'
 import { fileURLToPath } from 'node:url'
-import { UserEntity as UserDto } from '../business/entities/entity'
-import User from '../business/entities/user'
-import { generateId, hashManager } from '../common/utils'
-import { UserAdapters } from '../common/types'
+import { StatusCodes, MODULE_NAME, UserErrMsg } from '../common/constants.js'
+import { ErrorInst, ResultInst } from '../common/resultHandlers.js'
+import { generateId, hashManager } from '../common/utils.js'
+import { UserAdapters } from '../common/types.js'
+import { IUserDto, UserEntity } from '../entities/user.js'
 
 /**
  * Creates a new user account in the system.
@@ -21,15 +20,15 @@ import { UserAdapters } from '../common/types'
  */
 export const CreateUser = async (
   adapters: UserAdapters,
-  payload: UserDto,
+  payload: IUserDto,
 ): Promise<ResultInst> => {
   const { UserDataAdapter } = adapters
   const response = new ResultInst()
 
-  const { isValid, err } = User.validate(payload)
+  const { isValid, err } = UserEntity.validate(payload)
   if (!isValid)
     throw new ErrorInst(
-      fileURLToPath(__filename),
+      fileURLToPath(import.meta.url),
       `${MODULE_NAME}: Invalid user dto provided: ${err}`,
     )
 
@@ -48,9 +47,8 @@ export const CreateUser = async (
   const userId: string = generateId()
   const hashedPassword: string = hashManager().generate(payload.password)
 
-  const newUser = new User({
+  const { payload: newUser } = new UserEntity({
     ...payload,
-    userId,
     password: hashedPassword,
   })
 
@@ -63,7 +61,7 @@ export const CreateUser = async (
 
 export const AuthenticateUser = async (
   adapters: UserAdapters,
-  payload: UserDto,
+  payload: IUserDto,
   options?: {
     projection: Record<string, number>
   },
@@ -71,10 +69,10 @@ export const AuthenticateUser = async (
   const { UserDataAdapter } = adapters
   const response = new ResultInst()
 
-  const { isValid, err } = User.validate(payload, true)
+  const { isValid, err } = UserEntity.validate(payload, true)
   if (!isValid)
     throw new ErrorInst(
-      fileURLToPath(__filename),
+      fileURLToPath(import.meta.url),
       `${MODULE_NAME}: Invalid user dto provided: ${err}`,
     )
 

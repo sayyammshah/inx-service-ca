@@ -1,6 +1,6 @@
-import { MongoDBClient } from '../../clients/index'
-import { TEST_ENVIRONMENT_VARIABLES } from '../../../__tests__/global-test-data'
 import { MongoClient } from 'mongodb'
+import { MongoDBClient } from '../../clients/index.js'
+import { TEST_ENVIRONMENT_VARIABLES } from '../../../__tests__/global-test-data.js'
 
 jest.mock('mongodb')
 

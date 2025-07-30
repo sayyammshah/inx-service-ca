@@ -2,10 +2,6 @@
 
 _Backend service for project **InsightX**, a platform where users can sign in and share their thoughts on any topic of their choice, allowing others to express their opinions and engage in discussions._
 
-#### Release Guide:
-
-1. [Release v1.0](https://github.com/sayyammshah/inx-service-ca/releases/tag/v1.0) - 21st March 2025 **_( latest )_**
-
 ### Badges
 
 [![Static Code CI](https://github.com/sayyammshah/inx-service-ca/actions/workflows/checks.yaml/badge.svg)](https://github.com/sayyammshah/inx-service-ca/actions/workflows/checks.yaml)

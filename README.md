@@ -2,10 +2,6 @@
 
 _Backend service for project **InsightX**, a platform where users can sign in and share their thoughts on any topic of their choice, allowing others to express their opinions and engage in discussions._
 
-#### Release Guide:
-
-1. [Release v1.0](https://github.com/sayyammshah/inx-service-ca/releases/tag/v1.0) - 21st March 2025 **_( latest )_**
-
 ### Badges
 
 [![Static Code CI](https://github.com/sayyammshah/inx-service-ca/actions/workflows/checks.yaml/badge.svg)](https://github.com/sayyammshah/inx-service-ca/actions/workflows/checks.yaml)
@@ -95,15 +91,15 @@ Note:
 
 - _This is a self-driven project to explore techonologies and understand the different phases of software development._
 
-Archives:
+Engineering Notes:
 
-- [Pre-Production](/archives/pre-production/)
-- [Production](/archives/production/)
-- [Post-Production](/archives/post-production/)
+- [Pre-Production](engineering-notes/pre-production/)
+- [Production](engineering-notes/production/)
+- [Post-Production](engineering-notes/post-production/)
 
 Resources:
 
-- Container image for this project is available [here.]([https://github.com/sayyammshah/inx-service-ca/pkgs/container/inx-service-ca])
+- Container image for this project is available [here.](https://github.com/sayyammshah/inx-service-ca/pkgs/container/inx-service-ca)
 - Docker-compose file is available [here.](https://gist.github.com/e886139cda30a9bc66051dbaef505030.git)
 - View collection [here.](https://www.postman.com/red-trinity-198591/api-box/collection/zupxh38/inx-service-ca)
 

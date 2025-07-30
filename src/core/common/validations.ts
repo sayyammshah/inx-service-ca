@@ -1,5 +1,6 @@
 import { ValidationErrors } from './constants.js'
-import { EntitySchema, validationResult } from './types.js'
+import { ValidationResult } from './resultHandlers.js'
+import { EntityRules } from './types.js'
 
 // Helpers
 export const isArray = (value: unknown) =>
@@ -38,8 +39,11 @@ export function isValidType<T = string>(value: T, type: string): string {
 export const isValidSize = (value: unknown, size: string): string => {
   if (!value || !size) return ''
 
-  if (isArray(value) && (value as Array<unknown>).length > parseInt(size))
-    return `${ValidationErrors.LENGTH_MAX} ${size}`
+  if (isArray(value)) {
+    return (value as Array<unknown>).length > parseInt(size)
+      ? `${ValidationErrors.LENGTH_MAX} ${size}`
+      : ''
+  }
 
   const [min, max] = size.split('-').map((val) => parseInt(val))
   if ((value as string).length < min)
@@ -74,8 +78,8 @@ export function isValidListValue<T>(
 export const validator = <T>(
   field: string,
   value: T,
-  validations: EntitySchema['fields'][string]['validations'],
-): validationResult => {
+  validations: EntityRules['fields'][string]['validations'],
+): ValidationResult => {
   let validationErr: string | null = ''
 
   const { type, size, pattern, list } = validations
@@ -87,8 +91,8 @@ export const validator = <T>(
     (list && isValidListValue(value, list)) ||
     ''
 
-  return {
-    isValid: validationErr == '',
-    validationErr: validationErr !== '' ? `'${field}' ${validationErr}` : '',
-  }
+  return new ValidationResult(
+    validationErr == '',
+    validationErr !== '' ? `'${field}' ${validationErr}` : '',
+  )
 }

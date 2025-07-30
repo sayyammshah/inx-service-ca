@@ -1,7 +1,7 @@
 import { ResponseStatusCodes } from './constants.js'
 
 export class ApiResponse {
-  status: number = ResponseStatusCodes.OK
+  status: number = ResponseStatusCodes.Ok
   data: unknown | null = null
   error: Record<string, unknown> | string | null = null
 
@@ -11,11 +11,11 @@ export class ApiResponse {
   ) {
     if (data && typeof data === 'object' && 'status' in data) {
       const result = { ...data } // Required to create other object as 'status' will be deleted from 'result' data object
-      this.status = (data?.status as number) ?? ResponseStatusCodes.OK
+      this.status = (data?.status as number) ?? ResponseStatusCodes.Ok
       delete result.status
       this.data = result ?? null
     } else {
-      this.status = ResponseStatusCodes.OK
+      this.status = ResponseStatusCodes.Ok
       this.data = data ?? null
     }
     this.error = error ?? null
@@ -23,7 +23,7 @@ export class ApiResponse {
 }
 
 export class AppError {
-  status: number = ResponseStatusCodes.INTERNAL_SERVER_ERROR
+  status: number = ResponseStatusCodes.InternalServerError
   cause: unknown = null
   stack?: string = ''
 
@@ -47,7 +47,7 @@ export class AppError {
 
   static generateGlobalErrorObject(error: AppError | Error) {
     const errorObject = {
-      status: ResponseStatusCodes.INTERNAL_SERVER_ERROR,
+      status: ResponseStatusCodes.InternalServerError,
       cause: 'Something went wrong',
       stack: '',
     }

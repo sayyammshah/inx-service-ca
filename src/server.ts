@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
 import { httpLogger, logger, ApiResponse, AppError } from '@shared'
-import { InsightRouter, UserRouter } from '@adapters'
+import { InsightRouter, UserRouter, ThreadRouter } from '@adapters'
 import { MongoDBClient } from '@infra'
 
 const PORT = process.env.PORT || 3001
@@ -46,7 +46,7 @@ app.get('/health-check', (req, res) => {
 
 app.use('/v1/api/user', UserRouter)
 app.use('/v1/api/inx', InsightRouter)
-// app.use('/v1/api/thread', ThreadRouter)
+app.use('/v1/api/thread', ThreadRouter)
 
 // ------------------------ Routes ------------------------
 

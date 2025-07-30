@@ -108,7 +108,7 @@ export interface IInsightStats {
   comments: number
 }
 
-export type IInsightDto = {
+export interface IInsightDto {
   insightId: string
   authorId: string
   title: string

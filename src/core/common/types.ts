@@ -1,4 +1,5 @@
 import { IInsightDataStore } from '../interfaces/insight.interface.js'
+import { IThreadDataStore } from '../interfaces/thread.interface.js'
 import { IUserDataStore } from '../interfaces/user.interface.js'
 import { StatusCodes } from './constants.js'
 
@@ -57,6 +58,9 @@ export type UserAdapters = {
 }
 export type InsightAdapters = {
   InsightDataAdapter: IInsightDataStore
+}
+export type ThreadAdapters = {
+  ThreadDataAdapter: IThreadDataStore
 }
 
 // Response Type Definitions

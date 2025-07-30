@@ -2,6 +2,7 @@ import { pbkdf2Sync, randomBytes, randomUUID } from 'node:crypto'
 import { isObject } from './validations.js'
 import { HASH, TIME_CONVERSIONS, UserErrMsg } from './constants.js'
 import { GenSecretsResult, RuleSetChecks } from './types.js'
+import { IThreadsDto } from '../entities/thread.js'
 
 export const flatten = <T>(
   data: T,
@@ -95,4 +96,17 @@ export function execOperations<T>(condition: RuleSetChecks, data: T): boolean {
     typeof operand === 'string' ? data[operand as keyof T] : operand,
   )
   return Operations()[operator](args)
+}
+
+export const generateThreadPath = (payload: Partial<IThreadsDto>): string => {
+  // rootThreadId/parentThreadId/threadId
+  let threadPath = ''
+
+  const { rootThread, parentThread, threadId } = payload
+
+  if (rootThread) threadPath = `${rootThread}/`
+  if (parentThread) threadPath += `${parentThread}/`
+  threadPath += !threadPath ? `/${threadId}` : threadId
+
+  return threadPath
 }

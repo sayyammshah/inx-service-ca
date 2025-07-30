@@ -1,17 +1,11 @@
-import { ThreadsDto } from '@core/business'
-import {
-  CoreUserErrorMsg,
-  HASH,
-  TIME_CONVERSIONS,
-} from '@core/common/constants.js'
-import { GenSecretsReturnRes, RuleSetChecks } from '@core/common/types.js'
 import { pbkdf2Sync, randomBytes, randomUUID } from 'node:crypto'
 import { isObject } from './validations.js'
+import { HASH, TIME_CONVERSIONS, UserErrMsg } from './constants.js'
+import { GenSecretsResult, RuleSetChecks } from './types.js'
+import { IThreadsDto } from '../entities/thread.js'
 
-export const generateId = (): string => randomUUID().replace(/-/g, '')
-
-export const flatten = (
-  data: Record<string, unknown>,
+export const flatten = <T>(
+  data: T,
   prefix: string = '',
 ): Record<string, unknown> => {
   let result: Record<string, unknown> = {}
@@ -25,6 +19,8 @@ export const flatten = (
   }
   return result
 }
+
+export const generateId = (): string => randomUUID().replace(/-/g, '')
 
 export const hashManager = () => {
   function generate(payload: string): string {
@@ -43,7 +39,7 @@ export const hashManager = () => {
   function verify(
     hash: string,
     payload: string,
-  ): Omit<GenSecretsReturnRes, 'payload'> {
+  ): Omit<GenSecretsResult, 'payload'> {
     const [salt, storedHash] = hash.split('.')
 
     const calculatedHash = pbkdf2Sync(
@@ -55,7 +51,7 @@ export const hashManager = () => {
     ).toString('hex')
 
     if (calculatedHash !== storedHash)
-      return { isValid: false, message: CoreUserErrorMsg.INCORRECT_PASSWORD }
+      return { isValid: false, message: UserErrMsg.IncorrectPassword }
 
     return { isValid: true, message: '' }
   }
@@ -63,13 +59,13 @@ export const hashManager = () => {
   return { generate, verify }
 }
 
-export const convertDate = (
-  date: number,
-  unit: string = 'minutes',
-): number | undefined => {
-  if (unit === 'minutes')
-    return Math.floor((Date.now() - date) / TIME_CONVERSIONS.MINUTES)
-}
+export const Calculate = (): {
+  [key: string]: (args: number[]) => number
+} => ({
+  divide: (args) => args[0] / args[1],
+  convertDateInMinutes: (args) =>
+    Math.floor((Date.now() - args[0]) / TIME_CONVERSIONS.MINUTES),
+})
 
 export const Operations = (): {
   [key: string]: <T = number>(args: T[]) => boolean
@@ -81,14 +77,6 @@ export const Operations = (): {
   notEqualsTo: (args) => args[0] != args[1],
   isUndefined: (args) => args.every((arg) => arg === undefined || arg === null),
   isDefined: (args) => args.every((arg) => arg),
-})
-
-export const Calculate = (): {
-  [key: string]: (args: number[]) => number
-} => ({
-  divide: (args) => args[0] / args[1],
-  convertDateInMinutes: (args) =>
-    Math.floor((Date.now() - args[0]) / TIME_CONVERSIONS.MINUTES),
 })
 
 export function execOperations<T>(condition: RuleSetChecks, data: T): boolean {
@@ -110,7 +98,7 @@ export function execOperations<T>(condition: RuleSetChecks, data: T): boolean {
   return Operations()[operator](args)
 }
 
-export const generateThreadPath = (payload: Partial<ThreadsDto>): string => {
+export const generateThreadPath = (payload: Partial<IThreadsDto>): string => {
   // rootThreadId/parentThreadId/threadId
   let threadPath = ''
 
@@ -121,12 +109,4 @@ export const generateThreadPath = (payload: Partial<ThreadsDto>): string => {
   threadPath += !threadPath ? `/${threadId}` : threadId
 
   return threadPath
-}
-
-export const isFlatStructure = (
-  givenObject: Record<string, unknown>,
-): boolean => {
-  return Object.keys(givenObject).every(
-    (key) => givenObject[key] && typeof givenObject[key] !== 'object',
-  )
 }

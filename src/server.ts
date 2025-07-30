@@ -1,16 +1,11 @@
 import express, { NextFunction, Request, Response } from 'express'
 import cors from 'cors'
-import {
-  UserRouter,
-  InsightRouter,
-  ThreadRouter,
-} from '@bindings/express-routes'
-import { MongoDBClient } from '@infra/clients'
-import { httpLogger, logger } from 'shared/logger.js'
-import { ApiResponse, AppError } from 'shared/apiResponseCls.js'
+import { httpLogger, logger, ApiResponse, AppError } from '@shared'
+import { InsightRouter, UserRouter, ThreadRouter } from '@adapters'
+import { MongoDBClient } from '@infra'
 
 const PORT = process.env.PORT || 3001
-const app = express()
+export const app = express()
 
 // Middlewares
 
@@ -31,7 +26,13 @@ app.use(
   }),
 )
 
-app.use(httpLogger)
+app.use((req: Request, res: Response, next: NextFunction) => {
+  try {
+    httpLogger(req, res, next)
+  } catch (error) {
+    logger.error(error)
+  }
+})
 
 // ------------------------ Routes ------------------------
 
